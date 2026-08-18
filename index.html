@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Il Compleanno di Jessy!</title>
+  <style>
+    @font-face {
+      font-family: 'CairoPixel';
+      src: url('cairopixel.ttf') format('truetype');
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      font-family: 'CairoPixel', sans-serif;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #5c2c91;
+    }
+
+    .screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hidden { display: none !important; }
+    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
+    .fade-in { opacity: 1; transition: opacity 0.8s ease; }
+
+    /* PARTE 1 */
+    #btn-start {
+      background: none; border: none; cursor: pointer;
+    }
+    #btn-start img { width: 220px; transition: transform 0.2s; }
+    #btn-start img:active { transform: scale(0.95); }
+
+    .intro-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .pergamena {
+      background: #fff3a0;
+      border: 4px solid #8d5b12;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 80%;
+      max-height: 70vh;
+      overflow-y: auto;
+      color: #3d2200;
+      text-align: left;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      box-shadow: 0 8px 0 #4a2f08;
+    }
+
+    #red-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255, 0, 0, 0.4);
+      z-index: 99;
+      pointer-events: none;
+    }
+
+    .error-text {
+      position: absolute;
+      z-index: 100;
+      color: #fff;
+      font-size: 2rem;
+      text-shadow: 3px 3px #000;
+      animation: blink 0.5s infinite alternate;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    .vortice {
+      animation: spinScale 1.5s forwards ease-in;
+    }
+
+    @keyframes spinScale {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(1080deg) scale(0); }
+    }
+
+    /* PARTE 2: GIOCO */
+    #game-screen {
+      background-image: url('sfondo-gioco.png');
+      background-repeat: repeat-x;
+      background-size: auto 100%;
+      position: relative;
+    }
+
+    #game-canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .progress-container {
+      position: absolute;
+      top: 20px;
+      width: 80%;
+      height: 25px;
+      background: rgba(0,0,0,0.5);
+      border: 3px solid #fff;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.2s;
+    }
+
+    /* PARTE 3: REGALI */
+    #gifts-screen {
+      background: url('sfondo-regali.png') center/cover no-repeat;
+    }
+
+    .icons-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .icon-btn img {
+      width: 80px;
+      height: 80px;
+      transition: transform 0.2s;
+    }
+
+    .icon-btn img:hover { transform: scale(1.1); }
+
+    .back-btn {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: #ff4081;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .gallery-grid {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      max-width: 90vw;
+      padding: 10px;
+    }
+
+    .gallery-grid img {
+      height: 200px;
+      border-radius: 8px;
+      border: 3px solid #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PARTE 1: INTRODUZIONE -->
+  <div id="part1" class="screen">
+    <button id="btn-start" onclick="iniziaEsperienza()">
+      <img src="bottone-inizio.png" alt="Clicca Qui">
+    </button>
+
+    <div id="stage-torta" class="intro-container hidden">
+      <img src="personaggio-spensierato.gif" style="height: 150px;">
+      <img src="torta.gif" style="height: 180px;">
+    </div>
+
+    <div id="stage-pergamena" class="intro-container hidden">
+      <div class="pergamena">
+        <div id="pergamena-testo"></div>
+        <br>
+        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold;" onclick="clickContinua()">
+          Schiaccia qui per continuare
+        </span>
+      </div>
+      <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="height: 150px;">
+      <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 80px; position: absolute; right: -20px; top: -40px;">
+    </div>
+
+    <div id="red-overlay" class="hidden"></div>
+    <div id="error-msg" class="error-text hidden">Errore.exe! Per poter proseguire, recuperare i regali!</div>
+  </div>
+
+  <!-- PARTE 2: VIDEOGIOCO -->
+  <div id="game-screen" class="screen hidden">
+    <div class="progress-container">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    
+    <div id="cutscene-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none;">
+      <!-- Gestito via JS per dialoghi/scena iniziale -->
+      <div id="cutscene-box" style="color: white; font-size: 1.5rem; background: rgba(0,0,0,0.7); padding: 15px; margin-top: 100px; border-radius: 10px;" class="hidden"></div>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+  </div>
+
+  <!-- PARTE 3: REGALI -->
+  <div id="gifts-screen" class="screen hidden">
+    <div id="menu-icons">
+      <h2 style="color: white; text-shadow: 2px 2px #000;">I Tuoi Regali</h2>
+      <div class="icons-grid">
+        <button class="icon-btn" onclick="apriRegalo('fiori')"><img src="icona-fiori.png"><span>Fiori</span></button>
+        <button class="icon-btn" onclick="apriRegalo('foto')"><img src="icona-foto.png"><span>Foto</span></button>
+        <button class="icon-btn" onclick="apriRegalo('lettera')"><img src="icona-lettera.png"><span>Lettera</span></button>
+        <button class="icon-btn" onclick="apriRegalo('video')"><img src="icona-video.png"><span>Video</span></button>
+        <button class="icon-btn" onclick="apriRegalo('gatto')"><img src="icona-gatto.png"><span>Extra</span></button>
+      </div>
+    </div>
+
+    <!-- Sezione Dettaglio Regalo -->
+    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.85);">
+      <div id="contenuto-regalo"></div>
+      <button class="back-btn" onclick="chiudiRegalo()">Torna indietro</button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Player helper
+    function playAudio(src, loop = false) {
+      const a = new Audio(src);
+      a.loop = loop;
+      a.play().catch(e => console.log("Audio block", e));
+      return a;
+    }
+
+    let clickCount = 0;
+    let bgMusic = null;
+
+    // --- PARTE 1 LOGICA ---
+    function iniziaEsperienza() {
+      playAudio('click.mp3');
+      document.getElementById('btn-start').classList.add('fade-out');
+      
+      setTimeout(() => {
+        document.getElementById('btn-start').classList.add('hidden');
+        document.getElementById('stage-torta').classList.remove('hidden');
+        
+        let auguriAudio = playAudio('tanti-auguri.mp3');
+        auguriAudio.onended = () => {
+          playAudio('sparizione-torta.mp3');
+          document.getElementById('stage-torta').classList.add('hidden');
+          mostraPergamena();
+        };
+      }, 800);
+    }
+
+    function mostraPergamena() {
+      document.getElementById('stage-pergamena').classList.remove('hidden');
+      const testo = "Cara Jessy,\nQuesto è un piccolo regalo virtuale da parte mia!\nSpero che ti piaccia, e che passerai un compleanno dei 18 felice insieme a chi vuoi bene!\nPurtroppo nella data esatta non riesco ad essere presente, indi per cui ho deciso di mandarti un bacio e un abbraccio attraverso questo link!\nDi seguito troverai dei piccoli regali! Spero ti piacciano!";
+      
+      let i = 0;
+      const target = document.getElementById('pergamena-testo');
+      function typeWriter() {
+        if (i < testo.length) {
+          target.innerHTML += testo.charAt(i) === '\n' ? '<br>' : testo.charAt(i);
+          i++;
+          setTimeout(typeWriter, 40);
+        }
+      }
+      typeWriter();
+    }
+
+    function clickContinua() {
+      playAudio('click.mp3');
+      clickCount++;
+      
+      if (clickCount === 1) {
+        document.getElementById('vignetta-dubbio').classList.remove('hidden');
+      } else if (clickCount >= 3) {
+        // Sequenza Errore
+        document.getElementById('red-overlay').classList.remove('hidden');
+        document.getElementById('error-msg').classList.remove('hidden');
+        document.getElementById('pers-pergamena').src = 'personaggio-allarme.gif';
+        playAudio('allarme.mp3');
+
+        setTimeout(() => {
+          document.getElementById('part1').classList.add('vortice');
+          setTimeout(() => {
+            document.getElementById('part1').classList.add('hidden');
+            // Schermata nera 3 secondi
+            setTimeout(avviaParte2, 3000);
+          }, 1500);
+        }, 5000);
+      }
+    }
+
+    // --- PARTE 2: GAME ENGINE & CUTSCENE ---
+    function avviaParte2() {
+      document.getElementById('game-screen').classList.remove('hidden');
+      bgMusic = playAudio('musica-gioco.mp3', true);
+      
+      // Avvio Cutscene animata prima del gioco
+      const box = document.getElementById('cutscene-box');
+      box.classList.remove('hidden');
+      
+      box.innerText = "oh no! I miei regali! Devo recuperarli!";
+      playAudio('suono-sconcerto.mp3');
+      
+      setTimeout(() => {
+        box.innerText = "Non ce la farò mai da sola! Jessy, ho bisogno del tuo aiuto!";
+        setTimeout(() => {
+          box.innerText = "START!";
+          setTimeout(() => {
+            box.classList.add('hidden');
+            startMiniGame();
+          }, 1000);
+        }, 2500);
+      }, 2500);
+    }
+
+    function startMiniGame() {
+      const canvas = document.getElementById('game-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let score = 0;
+      const targetScore = 10;
+      let carY = canvas.height - 150;
+      let isJumping = false;
+      let jumpSpeed = 0;
+      const gravity = 0.8;
+
+      // Caricamento Immagini
+      const carImg = new Image(); carImg.src = 'macchina.gif';
+      const obsImg = new Image(); obsImg.src = 'ostacolo.png';
+      const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
+
+      let items = [];
+      
+      function spawnItem() {
+        const isObstacle = Math.random() > 0.5;
+        items.push({
+          x: canvas.width,
+          y: isObstacle ? canvas.height - 130 : canvas.height - 220,
+          type: isObstacle ? 'obs' : 'gift'
+        });
+      }
+
+      let spawnInterval = setInterval(spawnItem, 2000);
+
+      function jump() {
+        if (!isJumping) {
+          isJumping = true;
+          jumpSpeed = -16;
+          playAudio('suono-salto.mp3');
+        }
+      }
+
+      window.addEventListener('keydown', (e) => { if (e.code === 'Space') jump(); });
+      window.addEventListener('touchstart', jump);
+
+      function update() {
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+
+        // Fisica Salto
+        if (isJumping) {
+          carY += jumpSpeed;
+          jumpSpeed += gravity;
+          if (carY >= canvas.height - 150) {
+            carY = canvas.height - 150;
+            isJumping = false;
+          }
+        }
+
+        // Disegna Macchina
+        ctx.drawImage(carImg, 80, carY, 120, 70);
+
+        // Gestione Oggetti & Ostacoli
+        for (let i = items.length - 1; i >= 0; i--) {
+          let item = items[i];
+          item.x -= 6; // Velocità di movimento
+
+          if (item.type === 'obs') {
+            ctx.drawImage(obsImg, item.x, item.y, 50, 50);
+          } else {
+            ctx.drawImage(giftImg, item.x, item.y, 45, 45);
+          }
+
+          // Collisioni
+          if (item.x > 80 && item.x < 180 && carY + 70 > item.y && carY < item.y + 50) {
+            if (item.type === 'gift') {
+              score++;
+              playAudio('suono-regalo.mp3');
+              document.getElementById('progress-bar').style.width = (score / targetScore * 100) + '%';
+              items.splice(i, 1);
+
+              if (score >= targetScore) {
+                clearInterval(spawnInterval);
+                vittoriaGioco();
+                return;
+              }
+            }
+          }
+
+          if (item.x < -50) items.splice(i, 1);
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      update();
+    }
+
+    function vittoriaGioco() {
+      if (bgMusic) bgMusic.pause();
+      playAudio('yeee.mp3');
+      
+      const box = document.getElementById('cutscene-box');
+      box.classList.remove('hidden');
+      box.innerHTML = "<h1>FINE!</h1>";
+
+      setTimeout(() => {
+        document.getElementById('game-screen').classList.add('hidden');
+        // Schermata di vittoria intermedia
+        avviaParte3();
+      }, 2500);
+    }
+
+    // --- PARTE 3: REGALI ---
+    function avviaParte3() {
+      document.getElementById('gifts-screen').classList.remove('hidden');
+      playAudio('musica-regali.mp3', true);
+    }
+
+    function apriRegalo(tipo) {
+      playAudio('click.mp3');
+      const dett = document.getElementById('regalo-dettaglio');
+      const cont = document.getElementById('contenuto-regalo');
+      dett.classList.remove('hidden');
+
+      if (tipo === 'fiori') {
+        cont.innerHTML = `<img src="bouquet.png" style="max-height: 50vh;"><h2 style="color:white;">Dei fiori per i tuoi 18!</h2>`;
+      } else if (tipo === 'foto') {
+        cont.innerHTML = `
+          <h2 style="color:white;">I Nostri Ricordi</h2>
+          <div class="gallery-grid">
+            <img src="foto1.jpg">
+            <img src="foto2.jpg">
+            <img src="foto3.jpg">
+          </div>`;
+      } else if (tipo === 'lettera') {
+        cont.innerHTML = `
+          <div id="let-box" onclick="apriLetteraTesto()">
+            <img src="lettera-chiusa.png" style="width: 150px; cursor: pointer;">
+            <p style="color:white;">Clicca la lettera per leggerla!</p>
+          </div>`;
+      } else if (tipo === 'video') {
+        cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 80vw; max-height: 60vh; border-radius: 10px;"></video>`;
+      } else if (tipo === 'gatto') {
+        cont.innerHTML = `
+          <div style="color:white;">
+            <h2>Grazie di aver giocato!</h2>
+            <p>Realizzato da:</p>
+            <h3>V.Sasailor</h3>
+          </div>`;
+      }
+    }
+
+    function apriLetteraTesto() {
+      playAudio('click.mp3');
+      document.getElementById('contenuto-regalo').innerHTML = `
+        <div class="pergamena">
+          <p>Cara Jessy,</p>
+          <p>Spero ti sia piaciuto questo piccolo gioco interattivo!</p>
+          <p>Grazie per essere mia amica. Non immagini quanto io sia felice quando passo il tempo in tua compagnia: so che con te posso essere me stessa.</p>
+          <p>Che tutto questo rimanga nei tuoi ricordi di un meraviglioso compleanno dei 18, e che tu possa festeggiare felicemente! Non vedo l’ora di incontrarci per vederci dal vivo! Così potrò darti un abbraccio e anche i regali effettivi, ahah!</p>
+          <p>Tanti cari auguri,<br>Sofia.</p>
+        </div>`;
+    }
+
+    function chiudiRegalo() {
+      playAudio('click.mp3');
+      document.getElementById('regalo-dettaglio').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
