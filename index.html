@@ -273,6 +273,28 @@
       border: 5px solid #fff;
       box-shadow: 0 8px 15px rgba(0,0,0,0.5);
     }
+
+    /* Schermata dettaglio regalo centrata perfettamente */
+    #regalo-dettaglio {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.92);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #contenuto-regalo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -332,7 +354,7 @@
       </div>
     </div>
 
-    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.92); z-index: 100;">
+    <div id="regalo-dettaglio" class="hidden">
       <div id="contenuto-regalo"></div>
       <button class="back-btn" onclick="chiudiRegalo()">Torna indietro</button>
     </div>
@@ -447,19 +469,15 @@
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
 
-      // TERRENO BASE
       const floorY = canvas.height - 30; 
-      
       const obstacleY = floorY - obstacleSize;
-      
       const carOffsetBottom = 75; 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO PIÙ VELOCE E REATTIVO
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.32; // Più pesante/veloce
+      const gravity = 0.32;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -477,13 +495,12 @@
         });
       }
 
-      // SPAWN PIÙ RAVVICINATO (2.2 secondi invece di 2.8)
       let spawnInterval = setInterval(spawnItem, 2200);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -18; // Salto più rapido e scattante
+          jumpSpeed = -18;
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -494,10 +511,9 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Sfondo animato più veloce
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
-          bgX -= 6; // Sfondo che scorre più velocemente
+          bgX -= 6;
           if (bgX <= -bgScaledWidth) bgX = 0;
 
           for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
@@ -505,7 +521,6 @@
           }
         }
 
-        // Fisica Salto
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
@@ -515,12 +530,10 @@
           }
         }
 
-        // Posizionamento Macchina
         const carX = 50;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // HITBOX AUTO AGGIORNATA (Molto più stretta, ignora la trasparenza)
         const realCarHitbox = {
           left: carX + 140,
           right: carX + carDisplaySize - 140,
@@ -528,10 +541,9 @@
           bottom: carY + carDisplaySize - carOffsetBottom - 30
         };
 
-        // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 9; // Velocità degli ostacoli aumentata a 9
+          item.x -= 9; 
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obstacleSize, obstacleSize);
@@ -541,7 +553,6 @@
 
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
-          // HITBOX OSTACOLI/REGALI AGGIORNATA (Taglia via la trasparenza esterna)
           const itemHitbox = {
             left: item.x + 140,
             right: item.x + currentSize - 140,
@@ -549,7 +560,6 @@
             bottom: item.y + currentSize - 50
           };
 
-          // Controllo Collisioni
           const isColliding = !(
             realCarHitbox.right < itemHitbox.left ||
             realCarHitbox.left > itemHitbox.right ||
@@ -622,10 +632,10 @@
       dett.classList.remove('hidden');
 
       if (tipo === 'fiori') {
-        cont.innerHTML = `<img src="bouquet.png" style="max-height: 65vh;"><h2 style="color:white; font-size: 1.8rem;">Dei fiori speciali per i tuoi 18!</h2>`;
+        cont.innerHTML = `<img src="bouquet.png" style="max-height: 65vh;"><h2 style="color:white; font-size: 1.8rem; margin-top: 20px;">Dei fiori speciali per i tuoi 18!</h2>`;
       } else if (tipo === 'foto') {
         cont.innerHTML = `
-          <h2 style="color:white; font-size: 2rem;">I Nostri Ricordi</h2>
+          <h2 style="color:white; font-size: 2rem; margin-bottom: 20px;">I Nostri Ricordi</h2>
           <div class="gallery-grid">
             <img src="foto1.jpg">
             <img src="foto2.jpg">
@@ -633,9 +643,9 @@
           </div>`;
       } else if (tipo === 'lettera') {
         cont.innerHTML = `
-          <div id="let-box" onclick="apriLetteraTesto()">
-            <img src="lettera-chiusa.png" style="width: 220px; cursor: pointer;">
-            <p style="color:white; font-size: 1.3rem;">Clicca sulla lettera per leggerla!</p>
+          <div id="let-box" onclick="apriLetteraTesto()" style="cursor: pointer;">
+            <img src="lettera-chiusa.png" style="width: 220px;">
+            <p style="color:white; font-size: 1.3rem; margin-top: 15px;">Clicca sulla lettera per leggerla!</p>
           </div>`;
       } else if (tipo === 'video') {
         cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 85vw; max-height: 65vh; border-radius: 12px; border: 4px solid #fff;"></video>`;
@@ -643,8 +653,8 @@
         cont.innerHTML = `
           <div style="color:white;">
             <h2 style="font-size: 2rem;">Grazie di aver giocato!</h2>
-            <p style="font-size: 1.3rem;">Realizzato da:</p>
-            <h3 style="font-size: 1.8rem; color: #ff4081;">V.Sasailor</h3>
+            <p style="font-size: 1.3rem; margin-top: 10px;">Realizzato da:</p>
+            <h3 style="font-size: 1.8rem; color: #ff4081; margin-top: 5px;">V.Sasailor</h3>
           </div>`;
       }
     }
