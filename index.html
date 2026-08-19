@@ -61,7 +61,6 @@
       padding: 20px;
     }
 
-    /* Torta ANCORA PIÙ GRANDE con Personaggio nello stesso punto */
     #stage-torta {
       position: relative;
     }
@@ -146,6 +145,14 @@
       display: block;
     }
 
+    /* Elemento GIF Sovrapposto al Canvas per preservare le animazioni fluide */
+    #car-gif-element {
+      position: absolute;
+      z-index: 15;
+      pointer-events: none;
+      object-fit: contain;
+    }
+
     .progress-container {
       position: absolute;
       top: 25px;
@@ -156,7 +163,7 @@
       border: 4px solid #fff;
       border-radius: 20px;
       overflow: hidden;
-      z-index: 10;
+      z-index: 20;
     }
 
     .progress-bar {
@@ -296,10 +303,11 @@
     
     <div id="cutscene-container" class="hidden">
       <img id="cutscene-vignetta" class="vignetta-img" src="vignetta-ohno.png">
-      <!-- Personaggio Allarme per la Cutscene -->
       <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-allarme.gif">
     </div>
 
+    <!-- GIF Personaggio montata su HTML per mantenere l'animazione perfetta senza distorsioni -->
+    <img id="car-gif-element" src="personaggio-pronto.gif" class="hidden">
     <canvas id="game-canvas"></canvas>
   </div>
 
@@ -413,27 +421,30 @@
     function startMiniGame() {
       const canvas = document.getElementById('game-canvas');
       const ctx = canvas.getContext('2d');
+      const carElement = document.getElementById('car-gif-element');
+      
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+
+      carElement.classList.remove('hidden');
 
       let score = 0;
       const targetScore = 10;
       
-      // MACCHINA MOLTO MA MOLTO PIÙ GRANDE (~48% larghezza schermo)
-      const carWidth = Math.min(canvas.width * 0.48, 600);
-      const carHeight = carWidth * 0.55; 
-      
-      // OSTACOLI E REGALI ANCORA PIÙ GRANDI
-      const obsSize = carHeight * 0.85;
-      const giftSize = carHeight * 0.8;
+      // Proporzioni Macchina con larghezza adeguata
+      const carWidth = Math.min(canvas.width * 0.42, 520);
+      carElement.style.width = carWidth + 'px';
+      carElement.style.height = 'auto'; // Mantiene l'Aspect Ratio naturale per non schiacciare l'immagine
 
-      let carY = canvas.height - carHeight - 20;
+      // Dimensione ostacoli e regali ingranditi
+      const obsSize = 170;
+      const giftSize = 150;
+
+      let carY = canvas.height - 240;
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 1.0;
+      const gravity = 1.1;
 
-      // Nuova GIF della macchina
-      const carImg = new Image(); carImg.src = 'personaggio-pronto.gif';
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
       const bgImg = new Image(); bgImg.src = 'sfondo-gioco.png';
@@ -442,20 +453,20 @@
       let items = [];
 
       function spawnItem() {
-        const isObstacle = Math.random() > 0.45;
+        const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 20 : canvas.height - giftSize - (carHeight * 1.3),
+          y: isObstacle ? canvas.height - obsSize - 25 : canvas.height - giftSize - 220,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2000);
+      let spawnInterval = setInterval(spawnItem, 2200);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -26;
+          jumpSpeed = -28;
           playAudio('suono-salto.mp3');
         }
       }
@@ -466,7 +477,7 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Disegno Sfondo
+        // Disegno dello Sfondo
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
           bgX -= 3;
@@ -477,23 +488,36 @@
           }
         }
 
-        // Fisica Salto Macchina
+        // Fisica Salto
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
-          if (carY >= canvas.height - carHeight - 20) {
-            carY = canvas.height - carHeight - 20;
+          const groundY = canvas.height - 240;
+          if (carY >= groundY) {
+            carY = groundY;
             isJumping = false;
           }
         }
 
-        // Disegna Macchina
-        ctx.drawImage(carImg, 30, carY, carWidth, carHeight);
+        // Posizionamento GIF Macchina
+        const carX = 40;
+        carElement.style.left = carX + 'px';
+        carElement.style.top = carY + 'px';
 
-        // Disegna Ostacoli e Regali
+        // HITBOX REALE (Restringiamo i margini invisibili trasparenti dell'immagine)
+        const realCarHitbox = {
+          left: carX + (carWidth * 0.22), // Ignora la trasparenza frontale
+          right: carX + (carWidth * 0.78), // Ignora la trasparenza posteriore
+          top: carY + 40,
+          bottom: carY + 200
+        };
+
+        // Disegno e gestione Ostacoli e Regali
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
           item.x -= 8;
+
+          const currentSize = item.type === 'obs' ? obsSize : giftSize;
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
@@ -501,11 +525,23 @@
             ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
           }
 
-          // Rilevamento Collisioni (Margine più preciso per la macchina grande)
-          let hitX = item.x > 50 && item.x < 30 + carWidth - 80;
-          let hitY = carY + carHeight > item.y + 30 && carY < item.y + (item.type === 'obs' ? obsSize : giftSize);
+          // Hitbox Oggetto
+          const itemHitbox = {
+            left: item.x + 15,
+            right: item.x + currentSize - 15,
+            top: item.y + 15,
+            bottom: item.y + currentSize - 15
+          };
 
-          if (hitX && hitY) {
+          // Controllo Collisione Sovrapposizione
+          const isColliding = !(
+            realCarHitbox.right < itemHitbox.left ||
+            realCarHitbox.left > itemHitbox.right ||
+            realCarHitbox.bottom < itemHitbox.top ||
+            realCarHitbox.top > itemHitbox.bottom
+          );
+
+          if (isColliding) {
             if (item.type === 'gift') {
               score++;
               playAudio('suono-regalo.mp3');
@@ -514,11 +550,12 @@
 
               if (score >= targetScore) {
                 clearInterval(spawnInterval);
+                carElement.classList.add('hidden');
                 vittoriaGioco();
                 return;
               }
             } else if (item.type === 'obs') {
-              // COLLISIONE CON OSTACOLO: RESTART DA CAPO
+              // Reset Punteggio e ripartenza
               score = 0;
               document.getElementById('progress-bar').style.width = '0%';
               items = [];
