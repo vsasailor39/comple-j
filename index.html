@@ -456,10 +456,10 @@
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO CORRETTA: ALTEZZA BASSA, MA LUNGO
+      // FISICA DEL SALTO PIÙ VELOCE E REATTIVO
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.28; // Gravità morbida per planare in lungo
+      const gravity = 0.32; // Più pesante/veloce
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -477,12 +477,13 @@
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2800);
+      // SPAWN PIÙ RAVVICINATO (2.2 secondi invece di 2.8)
+      let spawnInterval = setInterval(spawnItem, 2200);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -16; // Altezza del salto ridotta e bilanciata
+          jumpSpeed = -18; // Salto più rapido e scattante
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -493,10 +494,10 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Sfondo animato
+        // Sfondo animato più veloce
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
-          bgX -= 4;
+          bgX -= 6; // Sfondo che scorre più velocemente
           if (bgX <= -bgScaledWidth) bgX = 0;
 
           for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
@@ -519,18 +520,18 @@
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox auto
+        // HITBOX AUTO AGGIORNATA (Molto più stretta, ignora la trasparenza)
         const realCarHitbox = {
-          left: carX + 100,
-          right: carX + carDisplaySize - 100,
-          top: carY + 100,
-          bottom: carY + carDisplaySize - carOffsetBottom - 25
+          left: carX + 140,
+          right: carX + carDisplaySize - 140,
+          top: carY + 140,
+          bottom: carY + carDisplaySize - carOffsetBottom - 30
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 7; 
+          item.x -= 9; // Velocità degli ostacoli aumentata a 9
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obstacleSize, obstacleSize);
@@ -540,11 +541,12 @@
 
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
+          // HITBOX OSTACOLI/REGALI AGGIORNATA (Taglia via la trasparenza esterna)
           const itemHitbox = {
-            left: item.x + 90,
-            right: item.x + currentSize - 90,
-            top: item.y + 90,
-            bottom: item.y + currentSize - 40
+            left: item.x + 140,
+            right: item.x + currentSize - 140,
+            top: item.y + 140,
+            bottom: item.y + currentSize - 50
           };
 
           // Controllo Collisioni
