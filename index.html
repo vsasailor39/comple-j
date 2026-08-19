@@ -145,7 +145,7 @@
       display: block;
     }
 
-    /* Elemento GIF Sovrapposto al Canvas per preservare le animazioni fluide */
+    /* Elemento GIF Sovrapposto al Canvas */
     #car-gif-element {
       position: absolute;
       z-index: 15;
@@ -306,7 +306,7 @@
       <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-allarme.gif">
     </div>
 
-    <!-- GIF Personaggio montata su HTML per mantenere l'animazione perfetta senza distorsioni -->
+    <!-- GIF Personaggio montata su HTML per preservare le animazioni -->
     <img id="car-gif-element" src="personaggio-pronto.gif" class="hidden">
     <canvas id="game-canvas"></canvas>
   </div>
@@ -331,9 +331,10 @@
   </div>
 
   <script>
-    function playAudio(src, loop = false) {
+    function playAudio(src, loop = false, volume = 1.0) {
       const a = new Audio(src);
       a.loop = loop;
+      a.volume = volume;
       a.play().catch(e => console.log("Audio non riprodotto:", e));
       return a;
     }
@@ -431,19 +432,23 @@
       let score = 0;
       const targetScore = 10;
       
-      // Proporzioni Macchina con larghezza adeguata
+      // Proporzioni Macchina
       const carWidth = Math.min(canvas.width * 0.42, 520);
       carElement.style.width = carWidth + 'px';
-      carElement.style.height = 'auto'; // Mantiene l'Aspect Ratio naturale per non schiacciare l'immagine
+      carElement.style.height = 'auto';
 
-      // Dimensione ostacoli e regali ingranditi
-      const obsSize = 170;
-      const giftSize = 150;
+      // Dimensioni MOLTO PIÙ GRANDI per Ostacoli e Regali
+      const obsSize = 220;
+      const giftSize = 200;
 
-      let carY = canvas.height - 240;
+      // Alzato il personaggio rispetto al bordo inferiore del canvas
+      const groundY = canvas.height - 300;
+      let carY = groundY;
+      
+      // Salto più lungo ed elevato
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 1.1;
+      const gravity = 0.65; // Gravità ridotta per prolungare la durata del salto
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -456,18 +461,18 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 25 : canvas.height - giftSize - 220,
+          y: isObstacle ? canvas.height - obsSize - 80 : canvas.height - giftSize - 290,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2200);
+      let spawnInterval = setInterval(spawnItem, 2500);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -28;
-          playAudio('suono-salto.mp3');
+          jumpSpeed = -22; // Forza del salto bilanciata con la gravità per durata maggiore
+          playAudio('suono-salto.mp3', false, 0.75); // Volume ridotto del 25%
         }
       }
 
@@ -477,7 +482,7 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Disegno dello Sfondo
+        // Disegno Sfondo
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
           bgX -= 3;
@@ -492,27 +497,26 @@
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
-          const groundY = canvas.height - 240;
           if (carY >= groundY) {
             carY = groundY;
             isJumping = false;
           }
         }
 
-        // Posizionamento GIF Macchina
+        // Posizionamento Personaggio
         const carX = 40;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // HITBOX REALE (Restringiamo i margini invisibili trasparenti dell'immagine)
+        // Hitbox Reale
         const realCarHitbox = {
-          left: carX + (carWidth * 0.22), // Ignora la trasparenza frontale
-          right: carX + (carWidth * 0.78), // Ignora la trasparenza posteriore
-          top: carY + 40,
-          bottom: carY + 200
+          left: carX + (carWidth * 0.25),
+          right: carX + (carWidth * 0.75),
+          top: carY + 30,
+          bottom: carY + 190
         };
 
-        // Disegno e gestione Ostacoli e Regali
+        // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
           item.x -= 8;
@@ -527,13 +531,13 @@
 
           // Hitbox Oggetto
           const itemHitbox = {
-            left: item.x + 15,
-            right: item.x + currentSize - 15,
-            top: item.y + 15,
-            bottom: item.y + currentSize - 15
+            left: item.x + 20,
+            right: item.x + currentSize - 20,
+            top: item.y + 20,
+            bottom: item.y + currentSize - 20
           };
 
-          // Controllo Collisione Sovrapposizione
+          // Controllo Collisioni
           const isColliding = !(
             realCarHitbox.right < itemHitbox.left ||
             realCarHitbox.left > itemHitbox.right ||
@@ -555,7 +559,7 @@
                 return;
               }
             } else if (item.type === 'obs') {
-              // Reset Punteggio e ripartenza
+              // Reset
               score = 0;
               document.getElementById('progress-bar').style.width = '0%';
               items = [];
@@ -564,7 +568,7 @@
             }
           }
 
-          if (item.x < -300) items.splice(i, 1);
+          if (item.x < -350) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -653,3 +657,4 @@
   </script>
 </body>
 </html>
+  
