@@ -40,13 +40,13 @@
 
     .hidden { display: none !important; }
 
-    /* PARTE 1: INTRO */
+    /* PARTE 1: INTRO (ELEMENTI MOLTO PIÙ GRANDI) */
     #btn-start {
       background: none; border: none; cursor: pointer;
     }
     #btn-start img { 
-      width: 380px; 
-      max-width: 85vw;
+      width: 500px; 
+      max-width: 95vw;
       transition: transform 0.2s; 
     }
     #btn-start img:active { transform: scale(0.95); }
@@ -60,27 +60,27 @@
       flex-wrap: wrap;
       width: 100%;
       height: 100%;
-      padding: 20px;
+      padding: 10px;
     }
 
-    /* Torta e Personaggio Parte 1 INGRANDITI */
+    /* Torta e Personaggi GIGANTI */
     #stage-torta img {
-      max-height: 65vh !important;
+      max-height: 75vh !important;
       width: auto;
       object-fit: contain;
     }
 
     .pergamena {
       background: #fff3a0;
-      border: 5px solid #8d5b12;
-      border-radius: 16px;
+      border: 6px solid #8d5b12;
+      border-radius: 18px;
       padding: 25px;
       max-width: 85%;
       max-height: 70vh;
       overflow-y: auto;
       color: #3d2200;
       text-align: left;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       line-height: 1.6;
       box-shadow: 0 10px 0 #4a2f08;
     }
@@ -97,7 +97,7 @@
       position: absolute;
       z-index: 100;
       color: #fff;
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: bold;
       text-shadow: 4px 4px #000;
       animation: blink 0.4s infinite alternate;
@@ -121,11 +121,11 @@
       100% { transform: rotate(1440deg) scale(0); opacity: 0; }
     }
 
-    /* PARTE 2: GIOCO */
+    /* PARTE 2: GIOCO & SCENA INTERMEDIA */
     #game-screen {
       position: relative;
       overflow: hidden;
-      background-color: #000;
+      background-color: #8a9a86;
     }
 
     #game-canvas {
@@ -138,8 +138,8 @@
       position: absolute;
       top: 25px;
       width: 80%;
-      max-width: 500px;
-      height: 30px;
+      max-width: 600px;
+      height: 35px;
       background: rgba(0,0,0,0.6);
       border: 4px solid #fff;
       border-radius: 20px;
@@ -154,7 +154,7 @@
       transition: width 0.2s ease-out;
     }
 
-    /* Cutscene Personaggino */
+    /* Cutscene con Vignette PNG e Personaggio */
     #cutscene-container {
       position: absolute;
       top: 0; left: 0;
@@ -163,26 +163,25 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: rgba(0,0,0,0.65);
+      background: #8a9a86;
       z-index: 30;
     }
 
-    .cutscene-box {
-      color: #fff;
-      font-size: 1.8rem;
-      background: #111;
-      border: 4px solid #fff;
-      padding: 25px 35px;
-      border-radius: 16px;
-      max-width: 85vw;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
+    .vignetta-img {
+      max-width: 80vw;
+      max-height: 35vh;
+      object-fit: contain;
+      filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.4));
     }
 
-    /* PARTE 3: REGALI */
+    .personaggio-cutscene {
+      max-height: 45vh;
+      width: auto;
+      object-fit: contain;
+      margin-top: 15px;
+    }
+
+    /* PARTE 3: REGALI (MOLTO PIÙ GRANDI) */
     #gifts-screen {
       background: url('sfondo-regali.png') center/cover no-repeat;
     }
@@ -191,9 +190,9 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 35px;
+      gap: 40px;
       margin-top: 30px;
-      max-width: 90vw;
+      max-width: 95vw;
     }
 
     .icon-btn {
@@ -204,17 +203,17 @@
       flex-direction: column;
       align-items: center;
       color: white;
-      font-size: 1.3rem;
-      text-shadow: 2px 2px #000;
+      font-size: 1.5rem;
+      text-shadow: 3px 3px #000;
     }
 
-    /* Icone Regali INGRANDITE */
+    /* Icone Regali GIGANTI */
     .icon-btn img {
-      width: 140px;
-      height: 140px;
+      width: 180px;
+      height: 180px;
       object-fit: contain;
-      transition: transform 0.2s ease, filter 0.2s;
-      filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.5));
+      transition: transform 0.2s ease;
+      filter: drop-shadow(0px 8px 10px rgba(0,0,0,0.6));
     }
 
     .icon-btn img:hover { transform: scale(1.15); }
@@ -225,26 +224,28 @@
       left: 25px;
       background: #ff4081;
       color: white;
-      padding: 14px 28px;
-      border-radius: 12px;
-      border: 3px solid #fff;
+      padding: 16px 32px;
+      border-radius: 14px;
+      border: 4px solid #fff;
       cursor: pointer;
-      font-size: 1.3rem;
-      box-shadow: 0 5px 0 #9c0042;
+      font-size: 1.5rem;
+      box-shadow: 0 6px 0 #9c0042;
     }
 
+    /* Foto Ingrandite */
     .gallery-grid {
       display: flex;
-      gap: 20px;
+      gap: 25px;
       overflow-x: auto;
-      max-width: 90vw;
-      padding: 15px;
+      max-width: 95vw;
+      padding: 20px;
     }
 
     .gallery-grid img {
-      height: 300px;
-      border-radius: 12px;
-      border: 4px solid #fff;
+      height: 400px; /* Foto decisamente più grandi */
+      border-radius: 14px;
+      border: 5px solid #fff;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.5);
     }
   </style>
 </head>
@@ -265,29 +266,28 @@
       <div class="pergamena">
         <div id="pergamena-testo"></div>
         <br>
-        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold; font-size: 1.3rem;" onclick="clickContinua()">
+        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold; font-size: 1.4rem;" onclick="clickContinua()">
           ▶ Schiaccia qui per continuare
         </span>
       </div>
-      <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="max-height: 50vh;">
-      <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 120px; position: absolute; right: 5%; top: 5%;">
+      <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="max-height: 60vh;">
+      <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 150px; position: absolute; right: 5%; top: 5%;">
     </div>
 
     <div id="red-overlay" class="hidden"></div>
     <div id="error-msg" class="error-text hidden">ERRORE.EXE!<br>Per poter proseguire, recupera i regali!</div>
   </div>
 
-  <!-- PARTE 2: VIDEOGIOCO -->
+  <!-- PARTE 2: VIDEOGIOCO & TRANSIIZONE -->
   <div id="game-screen" class="screen hidden">
     <div class="progress-container">
       <div id="progress-bar" class="progress-bar"></div>
     </div>
     
+    <!-- Cutscene con Vignette PNG e Personaggio -->
     <div id="cutscene-container" class="hidden">
-      <div class="cutscene-box">
-        <img id="cutscene-avatar" src="personaggio-spensierato.gif" style="height: 140px;" class="hidden">
-        <div id="cutscene-text"></div>
-      </div>
+      <img id="cutscene-vignetta" class="vignetta-img" src="vignetta-ohno.png">
+      <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-spensierato.gif">
     </div>
 
     <canvas id="game-canvas"></canvas>
@@ -296,7 +296,7 @@
   <!-- PARTE 3: REGALI -->
   <div id="gifts-screen" class="screen hidden">
     <div id="menu-icons">
-      <h2 style="color: white; text-shadow: 3px 3px #000; font-size: 2.8rem; margin-bottom: 10px;">I Tuoi Regali</h2>
+      <h2 style="color: white; text-shadow: 4px 4px #000; font-size: 3rem; margin-bottom: 15px;">I Tuoi Regali</h2>
       <div class="icons-grid">
         <button class="icon-btn" onclick="apriRegalo('fiori')"><img src="icona-fiori.png"><span>Fiori</span></button>
         <button class="icon-btn" onclick="apriRegalo('foto')"><img src="icona-foto.png"><span>Foto</span></button>
@@ -307,7 +307,7 @@
     </div>
 
     <!-- Dettaglio Regalo -->
-    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 100;">
+    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.92); z-index: 100;">
       <div id="contenuto-regalo"></div>
       <button class="back-btn" onclick="chiudiRegalo()">Torna indietro</button>
     </div>
@@ -366,7 +366,7 @@
         document.getElementById('pers-pergamena').src = 'personaggio-allarme.gif';
         playAudio('allarme.mp3');
 
-        // Attiva effetto buco nero/vortice
+        // Effetto Buco Nero / Vortice
         setTimeout(() => {
           document.getElementById('part1').classList.add('vortice');
           setTimeout(() => {
@@ -377,32 +377,32 @@
       }
     }
 
-    // --- PARTE 2: GAME ENGINE & CUTSCENE ---
+    // --- PARTE 2: CUTSCENE CON VIGNETTE PNG E AVVIO GIOCO ---
     function avviaParte2() {
       document.getElementById('game-screen').classList.remove('hidden');
-      bgMusic = playAudio('musica-gioco.mp3', true);
       
       const cutContainer = document.getElementById('cutscene-container');
-      const cutText = document.getElementById('cutscene-text');
-      const cutAvatar = document.getElementById('cutscene-avatar');
+      const cutVignetta = document.getElementById('cutscene-vignetta');
+      const cutPers = document.getElementById('cutscene-pers');
       
       cutContainer.classList.remove('hidden');
-      cutAvatar.classList.remove('hidden');
       
-      cutText.innerText = "Oh no! I miei regali sono spariti! Devo recuperarli!";
+      // 1. Prima vignetta: vignetta-ohno.png col personaggino
+      cutVignetta.src = 'vignetta-ohno.png';
+      cutPers.src = 'personaggio-spensierato.gif';
       playAudio('suono-sconcerto.mp3');
       
       setTimeout(() => {
-        cutText.innerText = "Non ce la farò mai da sola! Jessy, ho bisogno del tuo aiuto!";
+        // 2. Seconda vignetta: vignetta-aiuto.png
+        cutVignetta.src = 'vignetta-aiuto.png';
+        
         setTimeout(() => {
-          cutText.innerText = "START!";
-          cutAvatar.classList.add('hidden');
-          setTimeout(() => {
-            cutContainer.classList.add('hidden');
-            startMiniGame();
-          }, 1200);
-        }, 3000);
-      }, 3000);
+          // 3. Entra in macchina e parte il gioco
+          cutContainer.classList.add('hidden');
+          bgMusic = playAudio('musica-gioco.mp3', true);
+          startMiniGame();
+        }, 3500);
+      }, 3500);
     }
 
     function startMiniGame() {
@@ -414,13 +414,13 @@
       let score = 0;
       const targetScore = 10;
       
-      // Dimensioni INGRANDITE elementi
-      const carWidth = 180;
-      const carHeight = 100;
-      const obsSize = 80;
-      const giftSize = 70;
+      // ELEMENTI GIGANTI
+      const carWidth = 250;
+      const carHeight = 140;
+      const obsSize = 120;
+      const giftSize = 100;
 
-      let carY = canvas.height - carHeight - 40;
+      let carY = canvas.height - carHeight - 30;
       let isJumping = false;
       let jumpSpeed = 0;
       const gravity = 0.8;
@@ -437,7 +437,7 @@
         const isObstacle = Math.random() > 0.45;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 40 : canvas.height - giftSize - 160,
+          y: isObstacle ? canvas.height - obsSize - 30 : canvas.height - giftSize - 220,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -447,7 +447,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -18;
+          jumpSpeed = -20;
           playAudio('suono-salto.mp3');
         }
       }
@@ -458,34 +458,34 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Disegna sfondo in scorrimento senza deformarlo
+        // Sfondo Scalato Correttamente per Ripetere Continuamente
         if (bgImg.complete && bgImg.width > 0) {
-          const bgWidth = (canvas.height / bgImg.height) * bgImg.width;
+          const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width * 0.6; // Sfondo ridotto per non sembrare troppo grande
           bgX -= 3;
-          if (bgX <= -bgWidth) bgX = 0;
+          if (bgX <= -bgScaledWidth) bgX = 0;
 
-          for (let x = bgX; x < canvas.width; x += bgWidth) {
-            ctx.drawImage(bgImg, x, 0, bgWidth, canvas.height);
+          for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
+            ctx.drawImage(bgImg, x, 0, bgScaledWidth, canvas.height);
           }
         }
 
-        // Fisica Salto Macchina
+        // Fisica Macchina
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
-          if (carY >= canvas.height - carHeight - 40) {
-            carY = canvas.height - carHeight - 40;
+          if (carY >= canvas.height - carHeight - 30) {
+            carY = canvas.height - carHeight - 30;
             isJumping = false;
           }
         }
 
-        // Disegna Macchina Ingrandita
-        ctx.drawImage(carImg, 80, carY, carWidth, carHeight);
+        // Disegna Macchina Gigante
+        ctx.drawImage(carImg, 60, carY, carWidth, carHeight);
 
-        // Gestione Ostacoli e Regali
+        // Disegna Ostacoli e Regali Giganti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 7;
+          item.x -= 8;
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
@@ -493,8 +493,8 @@
             ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
           }
 
-          // Collisioni
-          if (item.x > 80 && item.x < 80 + carWidth && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
+          // Collisione
+          if (item.x > 60 && item.x < 60 + carWidth - 30 && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
             if (item.type === 'gift') {
               score++;
               playAudio('suono-regalo.mp3');
@@ -509,7 +509,7 @@
             }
           }
 
-          if (item.x < -100) items.splice(i, 1);
+          if (item.x < -150) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -523,15 +523,17 @@
       playAudio('yeee.mp3');
       
       const cutContainer = document.getElementById('cutscene-container');
-      const cutText = document.getElementById('cutscene-text');
+      const cutVignetta = document.getElementById('cutscene-vignetta');
+      const cutPers = document.getElementById('cutscene-pers');
       
       cutContainer.classList.remove('hidden');
-      cutText.innerHTML = "<h1>HAI VINTO!<br>Tutti i regali recuperati! 🎉</h1>";
+      cutVignetta.classList.add('hidden');
+      cutPers.src = 'personaggio-spensierato.gif';
 
       setTimeout(() => {
         document.getElementById('game-screen').classList.add('hidden');
         avviaParte3();
-      }, 3000);
+      }, 2500);
     }
 
     // --- PARTE 3: REGALI ---
@@ -547,10 +549,10 @@
       dett.classList.remove('hidden');
 
       if (tipo === 'fiori') {
-        cont.innerHTML = `<img src="bouquet.png" style="max-height: 60vh;"><h2 style="color:white; font-size: 2rem;">Dei fiori speciali per i tuoi 18!</h2>`;
+        cont.innerHTML = `<img src="bouquet.png" style="max-height: 65vh;"><h2 style="color:white; font-size: 2.2rem;">Dei fiori speciali per i tuoi 18!</h2>`;
       } else if (tipo === 'foto') {
         cont.innerHTML = `
-          <h2 style="color:white; font-size: 2rem;">I Nostri Ricordi</h2>
+          <h2 style="color:white; font-size: 2.5rem;">I Nostri Ricordi</h2>
           <div class="gallery-grid">
             <img src="foto1.jpg">
             <img src="foto2.jpg">
@@ -559,17 +561,17 @@
       } else if (tipo === 'lettera') {
         cont.innerHTML = `
           <div id="let-box" onclick="apriLetteraTesto()">
-            <img src="lettera-chiusa.png" style="width: 180px; cursor: pointer;">
-            <p style="color:white; font-size: 1.5rem;">Clicca sulla lettera per leggerla!</p>
+            <img src="lettera-chiusa.png" style="width: 220px; cursor: pointer;">
+            <p style="color:white; font-size: 1.8rem;">Clicca sulla lettera per leggerla!</p>
           </div>`;
       } else if (tipo === 'video') {
-        cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 85vw; max-height: 65vh; border-radius: 12px; border: 3px solid #fff;"></video>`;
+        cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 85vw; max-height: 65vh; border-radius: 12px; border: 4px solid #fff;"></video>`;
       } else if (tipo === 'gatto') {
         cont.innerHTML = `
           <div style="color:white;">
-            <h2 style="font-size: 2.2rem;">Grazie di aver giocato!</h2>
-            <p style="font-size: 1.5rem;">Realizzato da:</p>
-            <h3 style="font-size: 2rem; color: #ff4081;">V.Sasailor</h3>
+            <h2 style="font-size: 2.5rem;">Grazie di aver giocato!</h2>
+            <p style="font-size: 1.8rem;">Realizzato da:</p>
+            <h3 style="font-size: 2.2rem; color: #ff4081;">V.Sasailor</h3>
           </div>`;
       }
     }
