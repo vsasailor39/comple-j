@@ -445,10 +445,10 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI ELEMENTI MACRO
-      const carSize = 2300; // Macchina aumentata del 500% (2300px)
-      const obsSize = 1800; // Ostacoli aumentati del 400% (1800px)
-      const giftSize = 1800;// Regali aumentati del 400% (1800px)
+      // DIMENSIONI ELEMENTI RIDOTTE
+      const carSize = 575; // Macchina ridotta del 300% (575px)
+      const obsSize = 600; // Ostacoli ridotti del 200% (600px)
+      const giftSize = 600;// Regali ridotti del 200% (600px)
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
@@ -457,10 +457,10 @@
       const groundY = canvas.height - carSize - 60;
       let carY = groundY;
       
-      // Salto imponente (+800% altezza e gittata)
+      // Salto ridotto del 400%
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 1.2;
+      const gravity = 0.8;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -473,17 +473,17 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 200),
+          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 100),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 3000);
+      let spawnInterval = setInterval(spawnItem, 2500);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -135; // Aumentato dell'800% in altezza e gittata
+          jumpSpeed = -27; // Spinta ridotta del 400% per un salto proporzionato
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -522,16 +522,16 @@
 
         // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + 100,
-          right: carX + carSize - 100,
-          top: carY + 100,
-          bottom: carY + carSize - 100
+          left: carX + 40,
+          right: carX + carSize - 40,
+          top: carY + 40,
+          bottom: carY + carSize - 40
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 8;
+          item.x -= 7;
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
@@ -542,10 +542,10 @@
           // Hitbox Oggetto
           const itemSize = item.type === 'obs' ? obsSize : giftSize;
           const itemHitbox = {
-            left: item.x + 80,
-            right: item.x + itemSize - 80,
-            top: item.y + 80,
-            bottom: item.y + itemSize - 80
+            left: item.x + 30,
+            right: item.x + itemSize - 30,
+            top: item.y + 30,
+            bottom: item.y + itemSize - 30
           };
 
           // Controllo Collisioni
@@ -579,7 +579,7 @@
             }
           }
 
-          if (item.x < -2000) items.splice(i, 1);
+          if (item.x < -800) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
