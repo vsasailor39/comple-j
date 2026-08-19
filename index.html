@@ -61,13 +61,13 @@
       padding: 20px;
     }
 
-    /* Torta CENTRALE e Personaggio SOVRAPPOSTO */
+    /* Torta ANCORA PIÙ GRANDE con Personaggio nello stesso punto */
     #stage-torta {
       position: relative;
     }
 
     #stage-torta img[src*="torta"] {
-      max-height: 85vh !important;
+      max-height: 95vh !important;
       width: auto;
       object-fit: contain;
       z-index: 1;
@@ -80,7 +80,7 @@
       max-height: 55vh !important;
       width: auto;
       object-fit: contain;
-      z-index: 2; /* Sta sopra alla torta coprendola leggermente */
+      z-index: 2;
     }
 
     .pergamena {
@@ -296,7 +296,8 @@
     
     <div id="cutscene-container" class="hidden">
       <img id="cutscene-vignetta" class="vignetta-img" src="vignetta-ohno.png">
-      <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-spensierato.gif">
+      <!-- Personaggio Allarme per la Cutscene -->
+      <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-allarme.gif">
     </div>
 
     <canvas id="game-canvas"></canvas>
@@ -395,7 +396,7 @@
       cutContainer.classList.remove('hidden');
       
       cutVignetta.src = 'vignetta-ohno.png';
-      cutPers.src = 'personaggio-spensierato.gif';
+      cutPers.src = 'personaggio-allarme.gif';
       playAudio('suono-sconcerto.mp3');
       
       setTimeout(() => {
@@ -418,20 +419,21 @@
       let score = 0;
       const targetScore = 10;
       
-      // MACCHINA MOLTO MOLTO PIÙ GRANDE (fino a 500px / 38% dello schermo)
-      const carWidth = Math.min(canvas.width * 0.38, 500);
+      // MACCHINA MOLTO MA MOLTO PIÙ GRANDE (~48% larghezza schermo)
+      const carWidth = Math.min(canvas.width * 0.48, 600);
       const carHeight = carWidth * 0.55; 
       
-      // REGALI E OSTACOLI IN PROPORZIONE GIGANTI
-      const obsSize = carHeight * 0.9;
+      // OSTACOLI E REGALI ANCORA PIÙ GRANDI
+      const obsSize = carHeight * 0.85;
       const giftSize = carHeight * 0.8;
 
       let carY = canvas.height - carHeight - 20;
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.9;
+      const gravity = 1.0;
 
-      const carImg = new Image(); carImg.src = 'macchina.gif';
+      // Nuova GIF della macchina
+      const carImg = new Image(); carImg.src = 'personaggio-pronto.gif';
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
       const bgImg = new Image(); bgImg.src = 'sfondo-gioco.png';
@@ -443,17 +445,17 @@
         const isObstacle = Math.random() > 0.45;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 20 : canvas.height - giftSize - (carHeight * 1.4),
+          y: isObstacle ? canvas.height - obsSize - 20 : canvas.height - giftSize - (carHeight * 1.3),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 1800);
+      let spawnInterval = setInterval(spawnItem, 2000);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -24;
+          jumpSpeed = -26;
           playAudio('suono-salto.mp3');
         }
       }
@@ -464,7 +466,7 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Disegno Sfondo Seamless
+        // Disegno Sfondo
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
           bgX -= 3;
@@ -485,8 +487,8 @@
           }
         }
 
-        // Disegna Macchina Gigante
-        ctx.drawImage(carImg, 40, carY, carWidth, carHeight);
+        // Disegna Macchina
+        ctx.drawImage(carImg, 30, carY, carWidth, carHeight);
 
         // Disegna Ostacoli e Regali
         for (let i = items.length - 1; i >= 0; i--) {
@@ -499,8 +501,11 @@
             ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
           }
 
-          // Collisione
-          if (item.x > 40 && item.x < 40 + carWidth - 50 && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
+          // Rilevamento Collisioni (Margine più preciso per la macchina grande)
+          let hitX = item.x > 50 && item.x < 30 + carWidth - 80;
+          let hitY = carY + carHeight > item.y + 30 && carY < item.y + (item.type === 'obs' ? obsSize : giftSize);
+
+          if (hitX && hitY) {
             if (item.type === 'gift') {
               score++;
               playAudio('suono-regalo.mp3');
@@ -512,10 +517,17 @@
                 vittoriaGioco();
                 return;
               }
+            } else if (item.type === 'obs') {
+              // COLLISIONE CON OSTACOLO: RESTART DA CAPO
+              score = 0;
+              document.getElementById('progress-bar').style.width = '0%';
+              items = [];
+              playAudio('suono-sconcerto.mp3');
+              break;
             }
           }
 
-          if (item.x < -250) items.splice(i, 1);
+          if (item.x < -300) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -525,7 +537,6 @@
     }
 
     function vittoriaGioco() {
-      // STOP E RESET MUSICA DEL GIOCO PER EVITARE SOVRAPPOSIZIONI
       if (bgMusic) {
         bgMusic.pause();
         bgMusic.currentTime = 0;
@@ -538,8 +549,6 @@
       
       cutContainer.classList.remove('hidden');
       cutVignetta.classList.add('hidden');
-      
-      // MOSTRA PERSONAGGIO ABBRACCIO
       cutPers.src = 'personaggi-abbraccio.gif';
 
       setTimeout(() => {
