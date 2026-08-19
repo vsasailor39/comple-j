@@ -440,10 +440,10 @@
       let score = 0;
       const targetScore = 10;
       
-      // MACCHINA RADDOPPIATA (2x), OSTACOLI E REGALI INALTERATI
-      const carDisplaySize = 1080;   // Macchina molto grande
-      const obstacleSize = 450;     // Dimensione ostacolo
-      const giftSize = 450;         // Dimensione regalo
+      // RIPRISTINATE LE DIMENSIONI CORRETTE DELLA VERSIONE PRECEDENTE
+      const carDisplaySize = 540;   
+      const obstacleSize = 450;    
+      const giftSize = 450;        
 
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
@@ -451,18 +451,16 @@
       // TERRENO BASE
       const floorY = canvas.height - 30; 
       
-      // Posizione dell'ostacolo poggiato a terra
       const obstacleY = floorY - obstacleSize;
       
-      // Compensazione dello spazio trasparente vuoto sotto l'auto ingrandita
-      const carOffsetBottom = 150; 
+      const carOffsetBottom = 75; 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO IN LUNGO: SPINTA ALTA + GRAVITÀ RIDOTTA PER VOLARE A LUNGO
+      // FISICA DEL SALTO RICALIBRATA: MENO ALTO, MOLTO PIÙ LUNGO
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.55; // Ridotta per allungare notevolmente la traiettoria orizzontale
+      const gravity = 0.28; // Gravità molto ridotta per far volare l'auto in lungo per più tempo
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -475,17 +473,17 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? obstacleY : (floorY - 750),
+          y: isObstacle ? obstacleY : (floorY - 600),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 3200);
+      let spawnInterval = setInterval(spawnItem, 2800);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -42; // Spinta potente
+          jumpSpeed = -24; // Altezza moderata
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -518,16 +516,16 @@
         }
 
         // Posizionamento Macchina
-        const carX = 20;
+        const carX = 50;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox dell'auto ricalibrata sui bordi visibili dell'immagine 1080px
+        // Hitbox auto
         const realCarHitbox = {
-          left: carX + 200,
-          right: carX + carDisplaySize - 200,
-          top: carY + 200,
-          bottom: carY + carDisplaySize - carOffsetBottom - 40
+          left: carX + 100,
+          right: carX + carDisplaySize - 100,
+          top: carY + 100,
+          bottom: carY + carDisplaySize - carOffsetBottom - 25
         };
 
         // Disegno e gestione Oggetti
@@ -543,7 +541,6 @@
 
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
-          // Hitbox per gli oggetti
           const itemHitbox = {
             left: item.x + 90,
             right: item.x + currentSize - 90,
