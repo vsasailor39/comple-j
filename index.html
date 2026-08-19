@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -55,29 +55,32 @@
       position: relative;
       display: flex;
       align-items: center;
-      justify-content: space-around;
-      gap: 20px;
+      justify-content: center;
       width: 100%;
       height: 100%;
       padding: 20px;
     }
 
-    /* Personaggio a sinistra e Torta MOLTO più grande */
+    /* Torta CENTRALE e Personaggio SOVRAPPOSTO */
     #stage-torta {
-      padding: 0 5%;
-    }
-
-    #stage-torta img[src*="personaggio"] {
-      max-height: 50vh !important;
-      width: auto;
-      object-fit: contain;
-      margin-right: auto; /* Spinge a sinistra */
+      position: relative;
     }
 
     #stage-torta img[src*="torta"] {
-      max-height: 85vh !important; /* Torta nettamente più grande del personaggio */
+      max-height: 85vh !important;
       width: auto;
       object-fit: contain;
+      z-index: 1;
+    }
+
+    #stage-torta img[src*="personaggio"] {
+      position: absolute;
+      left: 15%;
+      bottom: 10%;
+      max-height: 55vh !important;
+      width: auto;
+      object-fit: contain;
+      z-index: 2; /* Sta sopra alla torta coprendola leggermente */
     }
 
     .pergamena {
@@ -120,7 +123,6 @@
       100% { opacity: 0.1; }
     }
 
-    /* EFFETTO BUCO NERO / VORTICE */
     .vortice {
       animation: spinScale 1.8s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045);
       transform-origin: center center;
@@ -164,7 +166,7 @@
       transition: width 0.2s ease-out;
     }
 
-    /* Cutscene con Vignette */
+    /* Cutscene */
     #cutscene-container {
       position: absolute;
       top: 0; left: 0;
@@ -185,7 +187,7 @@
     }
 
     .personaggio-cutscene {
-      max-height: 45vh;
+      max-height: 50vh;
       width: auto;
       object-fit: contain;
       margin-top: 15px;
@@ -279,7 +281,6 @@
         </span>
       </div>
       <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="max-height: 60vh;">
-      <!-- Vignetta del dubbio INGRANDITA -->
       <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 180px; position: absolute; right: 2%; top: 2%;">
     </div>
 
@@ -417,18 +418,18 @@
       let score = 0;
       const targetScore = 10;
       
-      // MACCHINA OCCUPA CIRCA 1/4 DELLA SCHERMATA
-      const carWidth = Math.min(canvas.width * 0.28, 380);
+      // MACCHINA MOLTO MOLTO PIÙ GRANDE (fino a 500px / 38% dello schermo)
+      const carWidth = Math.min(canvas.width * 0.38, 500);
       const carHeight = carWidth * 0.55; 
       
-      // OSTACOLI E REGALI MOLTO PIÙ GRANDI
-      const obsSize = carHeight * 0.95; // Proporzionati alla macchina
-      const giftSize = carHeight * 0.85;
+      // REGALI E OSTACOLI IN PROPORZIONE GIGANTI
+      const obsSize = carHeight * 0.9;
+      const giftSize = carHeight * 0.8;
 
       let carY = canvas.height - carHeight - 20;
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.85;
+      const gravity = 0.9;
 
       const carImg = new Image(); carImg.src = 'macchina.gif';
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
@@ -442,7 +443,7 @@
         const isObstacle = Math.random() > 0.45;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 20 : canvas.height - giftSize - (carHeight * 1.5),
+          y: isObstacle ? canvas.height - obsSize - 20 : canvas.height - giftSize - (carHeight * 1.4),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -452,7 +453,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -22;
+          jumpSpeed = -24;
           playAudio('suono-salto.mp3');
         }
       }
@@ -463,9 +464,9 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Sfondo Rimpicciolito (più piccolo per non sembrare sgranato)
+        // Disegno Sfondo Seamless
         if (bgImg.complete && bgImg.width > 0) {
-          const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width * 0.35;
+          const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
           bgX -= 3;
           if (bgX <= -bgScaledWidth) bgX = 0;
 
@@ -485,7 +486,7 @@
         }
 
         // Disegna Macchina Gigante
-        ctx.drawImage(carImg, 50, carY, carWidth, carHeight);
+        ctx.drawImage(carImg, 40, carY, carWidth, carHeight);
 
         // Disegna Ostacoli e Regali
         for (let i = items.length - 1; i >= 0; i--) {
@@ -499,7 +500,7 @@
           }
 
           // Collisione
-          if (item.x > 50 && item.x < 50 + carWidth - 40 && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
+          if (item.x > 40 && item.x < 40 + carWidth - 50 && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
             if (item.type === 'gift') {
               score++;
               playAudio('suono-regalo.mp3');
@@ -514,7 +515,7 @@
             }
           }
 
-          if (item.x < -200) items.splice(i, 1);
+          if (item.x < -250) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -524,7 +525,11 @@
     }
 
     function vittoriaGioco() {
-      if (bgMusic) bgMusic.pause();
+      // STOP E RESET MUSICA DEL GIOCO PER EVITARE SOVRAPPOSIZIONI
+      if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      }
       playAudio('yeee.mp3');
       
       const cutContainer = document.getElementById('cutscene-container');
@@ -533,12 +538,14 @@
       
       cutContainer.classList.remove('hidden');
       cutVignetta.classList.add('hidden');
-      cutPers.src = 'personaggio-spensierato.gif';
+      
+      // MOSTRA PERSONAGGIO ABBRACCIO
+      cutPers.src = 'personaggi-abbraccio.gif';
 
       setTimeout(() => {
         document.getElementById('game-screen').classList.add('hidden');
         avviaParte3();
-      }, 2500);
+      }, 3500);
     }
 
     // --- PARTE 3: REGALI ---
