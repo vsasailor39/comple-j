@@ -440,21 +440,21 @@
       let score = 0;
       const targetScore = 10;
       
-      // VALORI E DIMENSIONI ORIGINALI
-      const carSize = 863; 
-      const obsSize = 240; 
-      const giftSize = 240;
+      // DIMENSIONI UNIFORMI PER TUTTE LE ENTITA'
+      const entitySize = 160;
 
-      carElement.style.width = carSize + 'px';
-      carElement.style.height = carSize + 'px';
+      carElement.style.width = entitySize + 'px';
+      carElement.style.height = entitySize + 'px';
 
-      const groundY = canvas.height - carSize + 60;
+      // Linea del terreno uniforme calcolata dalla base dello schermo
+      const baseFloorY = canvas.height - 30;
+      const groundY = baseFloorY - entitySize;
       let carY = groundY;
       
-      // SALTO ORIGINALE
+      // FISICA SALTO AMPIA, ALTA E LUNGA
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.9;
+      const gravity = 0.55; 
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -467,7 +467,8 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? (groundY + carSize - obsSize) : (groundY + carSize - giftSize - 120),
+          // Ostacolo appoggiato al terreno; regalo sospeso ad altezza ideale per il salto
+          y: isObstacle ? groundY : (groundY - 150),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -477,7 +478,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -30; 
+          jumpSpeed = -22; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -514,32 +515,31 @@
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox del Personaggio
+        // Hitbox Generosa del Personaggio
         const realCarHitbox = {
-          left: carX + 45,
-          right: carX + carSize - 45,
-          top: carY + 45,
-          bottom: carY + carSize - 15
+          left: carX + 15,
+          right: carX + entitySize - 15,
+          top: carY + 15,
+          bottom: carY + entitySize - 10
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 7;
+          item.x -= 6; 
 
           if (item.type === 'obs') {
-            ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
+            ctx.drawImage(obsImg, item.x, item.y, entitySize, entitySize);
           } else {
-            ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
+            ctx.drawImage(giftImg, item.x, item.y, entitySize, entitySize);
           }
 
-          // Hitbox Oggetto
-          const itemSize = item.type === 'obs' ? obsSize : giftSize;
+          // Hitbox Bilanciata per gli Oggetti
           const itemHitbox = {
             left: item.x + 20,
-            right: item.x + itemSize - 20,
+            right: item.x + entitySize - 20,
             top: item.y + 20,
-            bottom: item.y + itemSize - 10
+            bottom: item.y + entitySize - 15
           };
 
           // Controllo Collisioni
@@ -572,7 +572,7 @@
             }
           }
 
-          if (item.x < -400) items.splice(i, 1);
+          if (item.x < -300) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
