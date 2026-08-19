@@ -440,21 +440,28 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI UNIFORMI PER TUTTE LE ENTITA'
-      const entitySize = 160;
+      // REGOLAZIONI DIMENSIONI VISIVE
+      const carDisplaySize = 90;   // Macchina fortemente rimpicciolita per compensare i margini trasparenti
+      const obstacleSize = 100;    // Dimensione ostacolo visivo
+      const giftSize = 100;        // Dimensione regalo visivo
 
-      carElement.style.width = entitySize + 'px';
-      carElement.style.height = entitySize + 'px';
+      carElement.style.width = carDisplaySize + 'px';
+      carElement.style.height = carDisplaySize + 'px';
 
-      // Linea del terreno uniforme calcolata dalla base dello schermo
-      const baseFloorY = canvas.height - 30;
-      const groundY = baseFloorY - entitySize;
-      let carY = groundY;
+      // TERRENO ED ALTEZZE
+      const floorY = canvas.height - 40; 
       
-      // FISICA SALTO AMPIA, ALTA E LUNGA
+      // Posizione base per l'ostacolo
+      const obstacleY = floorY - obstacleSize;
+      
+      // Allineamento preciso della macchina a terra
+      const carGroundY = floorY - carDisplaySize;
+      let carY = carGroundY;
+      
+      // FISICA DEL SALTO LUNGA E PERMISSIVA
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.55; 
+      const gravity = 0.45; 
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -467,18 +474,18 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          // Ostacolo appoggiato al terreno; regalo sospeso ad altezza ideale per il salto
-          y: isObstacle ? groundY : (groundY - 150),
+          // Ostacolo appoggiato a terra, regalo librato in alto per il salto
+          y: isObstacle ? obstacleY : (floorY - 260),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2500);
+      let spawnInterval = setInterval(spawnItem, 2600);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -22; 
+          jumpSpeed = -18; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -489,7 +496,7 @@
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Disegno Sfondo
+        // Sfondo animato
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
           bgX -= 3;
@@ -504,45 +511,47 @@
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
-          if (carY >= groundY) {
-            carY = groundY;
+          if (carY >= carGroundY) {
+            carY = carGroundY;
             isJumping = false;
           }
         }
 
-        // Posizionamento Personaggio/Macchina
-        const carX = 60;
+        // Posizionamento GIF Macchina
+        const carX = 80;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox Generosa del Personaggio
+        // Hitbox perdonabile per la Macchina
         const realCarHitbox = {
-          left: carX + 15,
-          right: carX + entitySize - 15,
-          top: carY + 15,
-          bottom: carY + entitySize - 10
+          left: carX + 20,
+          right: carX + carDisplaySize - 20,
+          top: carY + 20,
+          bottom: carY + carDisplaySize - 5
         };
 
-        // Disegno e gestione Oggetti
+        // Disegno e gestione degli Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 6; 
+          item.x -= 5.5; 
 
           if (item.type === 'obs') {
-            ctx.drawImage(obsImg, item.x, item.y, entitySize, entitySize);
+            ctx.drawImage(obsImg, item.x, item.y, obstacleSize, obstacleSize);
           } else {
-            ctx.drawImage(giftImg, item.x, item.y, entitySize, entitySize);
+            ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
           }
 
-          // Hitbox Bilanciata per gli Oggetti
+          const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
+          
+          // Hitbox per gli oggetti
           const itemHitbox = {
-            left: item.x + 20,
-            right: item.x + entitySize - 20,
-            top: item.y + 20,
-            bottom: item.y + entitySize - 15
+            left: item.x + 25,
+            right: item.x + currentSize - 25,
+            top: item.y + 25,
+            bottom: item.y + currentSize - 10
           };
 
-          // Controllo Collisioni
+          // Verifica Collisione
           const isColliding = !(
             realCarHitbox.right < itemHitbox.left ||
             realCarHitbox.left > itemHitbox.right ||
@@ -572,7 +581,7 @@
             }
           }
 
-          if (item.x < -300) items.splice(i, 1);
+          if (item.x < -200) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
