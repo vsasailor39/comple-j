@@ -445,19 +445,19 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI ELEMENTI RIDOTTE
-      const carSize = 575; // Macchina ridotta del 300% (575px)
-      const obsSize = 600; // Ostacoli ridotti del 200% (600px)
-      const giftSize = 600;// Regali ridotti del 200% (600px)
+      // DIMENSIONI ELEMENTI
+      const carSize = 575; 
+      const obsSize = 600; 
+      const giftSize = 600;
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Livello della strada (Ground Y)
-      const groundY = canvas.height - carSize - 60;
+      // Livello della strada (Ground Y abbassato del 200%)
+      const groundY = canvas.height - carSize + 60;
       let carY = groundY;
       
-      // Salto ridotto del 400%
+      // Fisica Salto
       let isJumping = false;
       let jumpSpeed = 0;
       const gravity = 0.8;
@@ -483,7 +483,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -27; // Spinta ridotta del 400% per un salto proporzionato
+          jumpSpeed = -27; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
