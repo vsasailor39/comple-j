@@ -445,19 +445,19 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI AGGIORNATE
-      const carSize = 647; // Diminuita del 25%
+      // DIMENSIONI INVARIATE
+      const carSize = 647; 
       const obsSize = 240; 
       const giftSize = 240;
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Livello della terra della macchina e oggetti (aumentato del 20%)
-      const groundY = canvas.height - carSize + 72;
+      // Linea di terra condivisa per macchina ed ostacoli
+      const groundY = canvas.height - carSize - 10;
       let carY = groundY;
       
-      // Fisica Salto aumentata del 25% (altezza e lunghezza)
+      // Fisica Salto
       let isJumping = false;
       let jumpSpeed = 0;
       const gravity = 0.9;
@@ -473,7 +473,9 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? (groundY + carSize - obsSize) : (groundY + carSize - giftSize - 120),
+          // Ostacoli appoggiati esattamente alla stessa linea di terra della macchina
+          // Regali sospesi ad un'altezza ideale per il salto rispetto al terreno
+          y: isObstacle ? (groundY + carSize - obsSize) : (groundY + carSize - giftSize - 180),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -483,7 +485,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -37.5; // Spinta aumentata del 25%
+          jumpSpeed = -37.5; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
