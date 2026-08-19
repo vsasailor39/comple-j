@@ -445,22 +445,22 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI ELEMENTI AGGIORNATE
-      const carSize = 460;  // Macchina impostata a 460px
-      const obsSize = 360;  // Ostacoli impostati a 360px
-      const giftSize = 360; // Regali impostati a 360px
+      // DIMENSIONI ELEMENTI MACRO
+      const carSize = 2300; // Macchina aumentata del 500% (2300px)
+      const obsSize = 1800; // Ostacoli aumentati del 400% (1800px)
+      const giftSize = 1800;// Regali aumentati del 400% (1800px)
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Livello della strada (Ground Y) calcolato rispetto alla nuova altezza della macchina
+      // Livello della strada (Ground Y)
       const groundY = canvas.height - carSize - 60;
       let carY = groundY;
       
-      // Salto (Aumentato del 200% in altezza e esteso nella traiettoria)
+      // Salto imponente (+800% altezza e gittata)
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.9; // Gravità per bilanciare il salto alto
+      const gravity = 1.2;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -473,18 +473,17 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          // Ostacolo a terra e Regalo fluttuante posizionati proporzionalmente
-          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 50),
+          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 200),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2500);
+      let spawnInterval = setInterval(spawnItem, 3000);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -45; // Aumentato del 200% in altezza (da -15 a -45)
+          jumpSpeed = -135; // Aumentato dell'800% in altezza e gittata
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -523,16 +522,16 @@
 
         // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + 30,
-          right: carX + carSize - 30,
-          top: carY + 30,
-          bottom: carY + carSize - 30
+          left: carX + 100,
+          right: carX + carSize - 100,
+          top: carY + 100,
+          bottom: carY + carSize - 100
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 7;
+          item.x -= 8;
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
@@ -543,10 +542,10 @@
           // Hitbox Oggetto
           const itemSize = item.type === 'obs' ? obsSize : giftSize;
           const itemHitbox = {
-            left: item.x + 20,
-            right: item.x + itemSize - 20,
-            top: item.y + 20,
-            bottom: item.y + itemSize - 20
+            left: item.x + 80,
+            right: item.x + itemSize - 80,
+            top: item.y + 80,
+            bottom: item.y + itemSize - 80
           };
 
           // Controllo Collisioni
@@ -580,7 +579,7 @@
             }
           }
 
-          if (item.x < -400) items.splice(i, 1);
+          if (item.x < -2000) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
