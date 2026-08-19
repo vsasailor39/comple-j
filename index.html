@@ -445,22 +445,22 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI ELEMENTI
-      const carSize = 160;  // Macchina impostata a 160px
-      const obsSize = 120;  // Dimensione ostacoli
-      const giftSize = 120; // Dimensione regali
+      // DIMENSIONI ELEMENTI AGGIORNATE
+      const carSize = 460;  // Macchina impostata a 460px
+      const obsSize = 360;  // Ostacoli impostati a 360px
+      const giftSize = 360; // Regali impostati a 360px
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Livello della strada (Ground Y) calcolato rispetto alla macchina
-      const groundY = canvas.height - carSize - 110;
+      // Livello della strada (Ground Y) calcolato rispetto alla nuova altezza della macchina
+      const groundY = canvas.height - carSize - 60;
       let carY = groundY;
       
-      // Salto (Aumentato del 25% in altezza e durata/lunghezza)
+      // Salto (Aumentato del 200% in altezza e esteso nella traiettoria)
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.48; // Gravità ridotta per aumentare del 25% il tempo di volo
+      const gravity = 0.9; // Gravità per bilanciare il salto alto
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -473,18 +473,18 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          // Ostacolo e regalo posizionati in modo da allinearsi con la nuova altezza della macchina
-          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 30),
+          // Ostacolo a terra e Regalo fluttuante posizionati proporzionalmente
+          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 50),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2200);
+      let spawnInterval = setInterval(spawnItem, 2500);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -18.75; // Aumentato del 25% (da -15 a -18.75) per un salto più alto
+          jumpSpeed = -45; // Aumentato del 200% in altezza (da -15 a -45)
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -523,10 +523,10 @@
 
         // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + 15,
-          right: carX + carSize - 15,
-          top: carY + 15,
-          bottom: carY + carSize - 15
+          left: carX + 30,
+          right: carX + carSize - 30,
+          top: carY + 30,
+          bottom: carY + carSize - 30
         };
 
         // Disegno e gestione Oggetti
@@ -543,10 +543,10 @@
           // Hitbox Oggetto
           const itemSize = item.type === 'obs' ? obsSize : giftSize;
           const itemHitbox = {
-            left: item.x + 10,
-            right: item.x + itemSize - 10,
-            top: item.y + 10,
-            bottom: item.y + itemSize - 10
+            left: item.x + 20,
+            right: item.x + itemSize - 20,
+            top: item.y + 20,
+            bottom: item.y + itemSize - 20
           };
 
           // Controllo Collisioni
@@ -580,7 +580,7 @@
             }
           }
 
-          if (item.x < -200) items.splice(i, 1);
+          if (item.x < -400) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
