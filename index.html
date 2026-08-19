@@ -445,22 +445,22 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI ELEMENTI
-      const carSize = 575; 
-      const obsSize = 600; 
-      const giftSize = 600;
+      // NUOVE DIMENSIONI PROPORZIONATE
+      const carSize = 863; // Macchina aumentata del 50%
+      const obsSize = 240; // Ostacoli ridotti del 60%
+      const giftSize = 240;// Regali ridotti del 60%
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Livello della strada (Ground Y abbassato del 200%)
+      // Livello della terra invariato
       const groundY = canvas.height - carSize + 60;
       let carY = groundY;
       
-      // Fisica Salto
+      // Fisica Salto bilanciata
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.8;
+      const gravity = 0.9;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -473,7 +473,8 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? (groundY + (carSize - obsSize)) : (groundY - giftSize - 100),
+          // Gli oggetti sono allineati perfettamente alla linea di terra
+          y: isObstacle ? (groundY + carSize - obsSize) : (groundY + carSize - giftSize - 120),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -483,7 +484,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -27; 
+          jumpSpeed = -30; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -522,10 +523,10 @@
 
         // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + 40,
-          right: carX + carSize - 40,
-          top: carY + 40,
-          bottom: carY + carSize - 40
+          left: carX + 60,
+          right: carX + carSize - 60,
+          top: carY + 60,
+          bottom: carY + carSize - 20
         };
 
         // Disegno e gestione Oggetti
@@ -542,10 +543,10 @@
           // Hitbox Oggetto
           const itemSize = item.type === 'obs' ? obsSize : giftSize;
           const itemHitbox = {
-            left: item.x + 30,
-            right: item.x + itemSize - 30,
-            top: item.y + 30,
-            bottom: item.y + itemSize - 30
+            left: item.x + 20,
+            right: item.x + itemSize - 20,
+            top: item.y + 20,
+            bottom: item.y + itemSize - 10
           };
 
           // Controllo Collisioni
@@ -579,7 +580,7 @@
             }
           }
 
-          if (item.x < -800) items.splice(i, 1);
+          if (item.x < -400) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
