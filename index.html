@@ -22,7 +22,6 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      /* Sfondo verde salvia di default */
       background-color: #8a9a86;
     }
 
@@ -36,19 +35,18 @@
       align-items: center;
       text-align: center;
       background-color: #8a9a86;
+      transition: opacity 0.5s ease;
     }
 
     .hidden { display: none !important; }
-    .fade-out { opacity: 0; transition: opacity 0.8s ease; }
-    .fade-in { opacity: 1; transition: opacity 0.8s ease; }
 
-    /* PARTE 1 */
+    /* PARTE 1: INTRO */
     #btn-start {
       background: none; border: none; cursor: pointer;
     }
     #btn-start img { 
-      width: 300px; 
-      max-width: 80vw;
+      width: 380px; 
+      max-width: 85vw;
       transition: transform 0.2s; 
     }
     #btn-start img:active { transform: scale(0.95); }
@@ -58,35 +56,39 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 20px;
+      gap: 30px;
       flex-wrap: wrap;
+      width: 100%;
+      height: 100%;
+      padding: 20px;
     }
 
-    .intro-container img {
-      max-height: 40vh !important;
+    /* Torta e Personaggio Parte 1 INGRANDITI */
+    #stage-torta img {
+      max-height: 65vh !important;
       width: auto;
       object-fit: contain;
     }
 
     .pergamena {
       background: #fff3a0;
-      border: 4px solid #8d5b12;
-      border-radius: 12px;
-      padding: 20px;
+      border: 5px solid #8d5b12;
+      border-radius: 16px;
+      padding: 25px;
       max-width: 85%;
       max-height: 70vh;
       overflow-y: auto;
       color: #3d2200;
       text-align: left;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       line-height: 1.6;
-      box-shadow: 0 8px 0 #4a2f08;
+      box-shadow: 0 10px 0 #4a2f08;
     }
 
     #red-overlay {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(255, 0, 0, 0.4);
+      background: rgba(255, 0, 0, 0.5);
       z-index: 99;
       pointer-events: none;
     }
@@ -95,47 +97,52 @@
       position: absolute;
       z-index: 100;
       color: #fff;
-      font-size: 2.2rem;
-      text-shadow: 3px 3px #000;
-      animation: blink 0.5s infinite alternate;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-shadow: 4px 4px #000;
+      animation: blink 0.4s infinite alternate;
       padding: 20px;
+      max-width: 90vw;
     }
 
     @keyframes blink {
       0% { opacity: 1; }
-      100% { opacity: 0.2; }
+      100% { opacity: 0.1; }
     }
 
+    /* EFFETTO BUCO NERO / VORTICE */
     .vortice {
-      animation: spinScale 1.5s forwards ease-in;
+      animation: spinScale 1.8s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045);
+      transform-origin: center center;
     }
 
     @keyframes spinScale {
-      0% { transform: rotate(0deg) scale(1); }
-      100% { transform: rotate(1080deg) scale(0); }
+      0% { transform: rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: rotate(1440deg) scale(0); opacity: 0; }
     }
 
     /* PARTE 2: GIOCO */
     #game-screen {
-      background-image: url('sfondo-gioco.png');
-      background-repeat: repeat-x;
-      background-size: auto 100%;
       position: relative;
+      overflow: hidden;
+      background-color: #000;
     }
 
     #game-canvas {
       width: 100%;
       height: 100%;
+      display: block;
     }
 
     .progress-container {
       position: absolute;
-      top: 20px;
+      top: 25px;
       width: 80%;
-      height: 25px;
-      background: rgba(0,0,0,0.5);
-      border: 3px solid #fff;
-      border-radius: 15px;
+      max-width: 500px;
+      height: 30px;
+      background: rgba(0,0,0,0.6);
+      border: 4px solid #fff;
+      border-radius: 20px;
       overflow: hidden;
       z-index: 10;
     }
@@ -144,7 +151,35 @@
       height: 100%;
       width: 0%;
       background: #4caf50;
-      transition: width 0.2s;
+      transition: width 0.2s ease-out;
+    }
+
+    /* Cutscene Personaggino */
+    #cutscene-container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.65);
+      z-index: 30;
+    }
+
+    .cutscene-box {
+      color: #fff;
+      font-size: 1.8rem;
+      background: #111;
+      border: 4px solid #fff;
+      padding: 25px 35px;
+      border-radius: 16px;
+      max-width: 85vw;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
     }
 
     /* PARTE 3: REGALI */
@@ -153,10 +188,12 @@
     }
 
     .icons-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 25px;
-      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 35px;
+      margin-top: 30px;
+      max-width: 90vw;
     }
 
     .icon-btn {
@@ -166,42 +203,48 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      color: white;
+      font-size: 1.3rem;
+      text-shadow: 2px 2px #000;
     }
 
+    /* Icone Regali INGRANDITE */
     .icon-btn img {
-      width: 100px;
-      height: 100px;
+      width: 140px;
+      height: 140px;
       object-fit: contain;
-      transition: transform 0.2s;
+      transition: transform 0.2s ease, filter 0.2s;
+      filter: drop-shadow(0px 6px 8px rgba(0,0,0,0.5));
     }
 
-    .icon-btn img:hover { transform: scale(1.1); }
+    .icon-btn img:hover { transform: scale(1.15); }
 
     .back-btn {
       position: absolute;
-      bottom: 20px;
-      left: 20px;
+      bottom: 25px;
+      left: 25px;
       background: #ff4081;
       color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      border: 2px solid #fff;
+      padding: 14px 28px;
+      border-radius: 12px;
+      border: 3px solid #fff;
       cursor: pointer;
-      font-size: 1.1rem;
+      font-size: 1.3rem;
+      box-shadow: 0 5px 0 #9c0042;
     }
 
     .gallery-grid {
       display: flex;
-      gap: 15px;
+      gap: 20px;
       overflow-x: auto;
       max-width: 90vw;
-      padding: 10px;
+      padding: 15px;
     }
 
     .gallery-grid img {
-      height: 250px;
-      border-radius: 8px;
-      border: 3px solid #fff;
+      height: 300px;
+      border-radius: 12px;
+      border: 4px solid #fff;
     }
   </style>
 </head>
@@ -214,24 +257,24 @@
     </button>
 
     <div id="stage-torta" class="intro-container hidden">
-      <img src="personaggio-spensierato.gif" style="height: 180px;">
-      <img src="torta.gif" style="height: 200px;">
+      <img src="personaggio-spensierato.gif" alt="Personaggio">
+      <img src="torta.gif" alt="Torta">
     </div>
 
     <div id="stage-pergamena" class="intro-container hidden">
       <div class="pergamena">
         <div id="pergamena-testo"></div>
         <br>
-        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold;" onclick="clickContinua()">
-          Schiaccia qui per continuare
+        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold; font-size: 1.3rem;" onclick="clickContinua()">
+          ▶ Schiaccia qui per continuare
         </span>
       </div>
-      <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="height: 180px;">
-      <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 90px; position: absolute; right: -20px; top: -40px;">
+      <img id="pers-pergamena" src="personaggio-sorpreso.gif" style="max-height: 50vh;">
+      <img id="vignetta-dubbio" class="hidden" src="vignetta-dubbio.png" style="height: 120px; position: absolute; right: 5%; top: 5%;">
     </div>
 
     <div id="red-overlay" class="hidden"></div>
-    <div id="error-msg" class="error-text hidden">Errore.exe! Per poter proseguire, recuperare i regali!</div>
+    <div id="error-msg" class="error-text hidden">ERRORE.EXE!<br>Per poter proseguire, recupera i regali!</div>
   </div>
 
   <!-- PARTE 2: VIDEOGIOCO -->
@@ -240,8 +283,11 @@
       <div id="progress-bar" class="progress-bar"></div>
     </div>
     
-    <div id="cutscene-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 20;">
-      <div id="cutscene-box" style="color: white; font-size: 1.5rem; background: rgba(0,0,0,0.75); padding: 20px; margin-top: 100px; border-radius: 12px;" class="hidden"></div>
+    <div id="cutscene-container" class="hidden">
+      <div class="cutscene-box">
+        <img id="cutscene-avatar" src="personaggio-spensierato.gif" style="height: 140px;" class="hidden">
+        <div id="cutscene-text"></div>
+      </div>
     </div>
 
     <canvas id="game-canvas"></canvas>
@@ -250,7 +296,7 @@
   <!-- PARTE 3: REGALI -->
   <div id="gifts-screen" class="screen hidden">
     <div id="menu-icons">
-      <h2 style="color: white; text-shadow: 2px 2px #000; font-size: 2rem;">I Tuoi Regali</h2>
+      <h2 style="color: white; text-shadow: 3px 3px #000; font-size: 2.8rem; margin-bottom: 10px;">I Tuoi Regali</h2>
       <div class="icons-grid">
         <button class="icon-btn" onclick="apriRegalo('fiori')"><img src="icona-fiori.png"><span>Fiori</span></button>
         <button class="icon-btn" onclick="apriRegalo('foto')"><img src="icona-foto.png"><span>Foto</span></button>
@@ -260,19 +306,18 @@
       </div>
     </div>
 
-    <!-- Sezione Dettaglio Regalo -->
-    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.85);">
+    <!-- Dettaglio Regalo -->
+    <div id="regalo-dettaglio" class="screen hidden" style="background: rgba(0,0,0,0.9); z-index: 100;">
       <div id="contenuto-regalo"></div>
       <button class="back-btn" onclick="chiudiRegalo()">Torna indietro</button>
     </div>
   </div>
 
   <script>
-    // Audio Player helper
     function playAudio(src, loop = false) {
       const a = new Audio(src);
       a.loop = loop;
-      a.play().catch(e => console.log("Audio block", e));
+      a.play().catch(e => console.log("Audio non riprodotto:", e));
       return a;
     }
 
@@ -282,19 +327,15 @@
     // --- PARTE 1 LOGICA ---
     function iniziaEsperienza() {
       playAudio('click.mp3');
-      document.getElementById('btn-start').classList.add('fade-out');
+      document.getElementById('btn-start').classList.add('hidden');
+      document.getElementById('stage-torta').classList.remove('hidden');
       
-      setTimeout(() => {
-        document.getElementById('btn-start').classList.add('hidden');
-        document.getElementById('stage-torta').classList.remove('hidden');
-        
-        let auguriAudio = playAudio('tanti-auguri.mp3');
-        auguriAudio.onended = () => {
-          playAudio('sparizione-torta.mp3');
-          document.getElementById('stage-torta').classList.add('hidden');
-          mostraPergamena();
-        };
-      }, 800);
+      let auguriAudio = playAudio('tanti-auguri.mp3');
+      auguriAudio.onended = () => {
+        playAudio('sparizione-torta.mp3');
+        document.getElementById('stage-torta').classList.add('hidden');
+        mostraPergamena();
+      };
     }
 
     function mostraPergamena() {
@@ -307,7 +348,7 @@
         if (i < testo.length) {
           target.innerHTML += testo.charAt(i) === '\n' ? '<br>' : testo.charAt(i);
           i++;
-          setTimeout(typeWriter, 40);
+          setTimeout(typeWriter, 35);
         }
       }
       typeWriter();
@@ -325,13 +366,14 @@
         document.getElementById('pers-pergamena').src = 'personaggio-allarme.gif';
         playAudio('allarme.mp3');
 
+        // Attiva effetto buco nero/vortice
         setTimeout(() => {
           document.getElementById('part1').classList.add('vortice');
           setTimeout(() => {
             document.getElementById('part1').classList.add('hidden');
-            setTimeout(avviaParte2, 3000);
-          }, 1500);
-        }, 5000);
+            avviaParte2();
+          }, 1800);
+        }, 3500);
       }
     }
 
@@ -340,22 +382,27 @@
       document.getElementById('game-screen').classList.remove('hidden');
       bgMusic = playAudio('musica-gioco.mp3', true);
       
-      const box = document.getElementById('cutscene-box');
-      box.classList.remove('hidden');
+      const cutContainer = document.getElementById('cutscene-container');
+      const cutText = document.getElementById('cutscene-text');
+      const cutAvatar = document.getElementById('cutscene-avatar');
       
-      box.innerText = "oh no! I miei regali! Devo recuperarli!";
+      cutContainer.classList.remove('hidden');
+      cutAvatar.classList.remove('hidden');
+      
+      cutText.innerText = "Oh no! I miei regali sono spariti! Devo recuperarli!";
       playAudio('suono-sconcerto.mp3');
       
       setTimeout(() => {
-        box.innerText = "Non ce la farò mai da sola! Jessy, ho bisogno del tuo aiuto!";
+        cutText.innerText = "Non ce la farò mai da sola! Jessy, ho bisogno del tuo aiuto!";
         setTimeout(() => {
-          box.innerText = "START!";
+          cutText.innerText = "START!";
+          cutAvatar.classList.add('hidden');
           setTimeout(() => {
-            box.classList.add('hidden');
+            cutContainer.classList.add('hidden');
             startMiniGame();
-          }, 1000);
-        }, 2500);
-      }, 2500);
+          }, 1200);
+        }, 3000);
+      }, 3000);
     }
 
     function startMiniGame() {
@@ -366,7 +413,14 @@
 
       let score = 0;
       const targetScore = 10;
-      let carY = canvas.height - 150;
+      
+      // Dimensioni INGRANDITE elementi
+      const carWidth = 180;
+      const carHeight = 100;
+      const obsSize = 80;
+      const giftSize = 70;
+
+      let carY = canvas.height - carHeight - 40;
       let isJumping = false;
       let jumpSpeed = 0;
       const gravity = 0.8;
@@ -374,24 +428,26 @@
       const carImg = new Image(); carImg.src = 'macchina.gif';
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
+      const bgImg = new Image(); bgImg.src = 'sfondo-gioco.png';
 
+      let bgX = 0;
       let items = [];
-      
+
       function spawnItem() {
-        const isObstacle = Math.random() > 0.5;
+        const isObstacle = Math.random() > 0.45;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - 130 : canvas.height - 220,
+          y: isObstacle ? canvas.height - obsSize - 40 : canvas.height - giftSize - 160,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2000);
+      let spawnInterval = setInterval(spawnItem, 1800);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -16;
+          jumpSpeed = -18;
           playAudio('suono-salto.mp3');
         }
       }
@@ -400,30 +456,45 @@
       window.addEventListener('touchstart', jump);
 
       function update() {
-        ctx.clearRect(0,0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        // Disegna sfondo in scorrimento senza deformarlo
+        if (bgImg.complete && bgImg.width > 0) {
+          const bgWidth = (canvas.height / bgImg.height) * bgImg.width;
+          bgX -= 3;
+          if (bgX <= -bgWidth) bgX = 0;
+
+          for (let x = bgX; x < canvas.width; x += bgWidth) {
+            ctx.drawImage(bgImg, x, 0, bgWidth, canvas.height);
+          }
+        }
+
+        // Fisica Salto Macchina
         if (isJumping) {
           carY += jumpSpeed;
           jumpSpeed += gravity;
-          if (carY >= canvas.height - 150) {
-            carY = canvas.height - 150;
+          if (carY >= canvas.height - carHeight - 40) {
+            carY = canvas.height - carHeight - 40;
             isJumping = false;
           }
         }
 
-        ctx.drawImage(carImg, 80, carY, 120, 70);
+        // Disegna Macchina Ingrandita
+        ctx.drawImage(carImg, 80, carY, carWidth, carHeight);
 
+        // Gestione Ostacoli e Regali
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 6;
+          item.x -= 7;
 
           if (item.type === 'obs') {
-            ctx.drawImage(obsImg, item.x, item.y, 50, 50);
+            ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
           } else {
-            ctx.drawImage(giftImg, item.x, item.y, 45, 45);
+            ctx.drawImage(giftImg, item.x, item.y, giftSize, giftSize);
           }
 
-          if (item.x > 80 && item.x < 180 && carY + 70 > item.y && carY < item.y + 50) {
+          // Collisioni
+          if (item.x > 80 && item.x < 80 + carWidth && carY + carHeight > item.y && carY < item.y + (item.type === 'obs' ? obsSize : giftSize)) {
             if (item.type === 'gift') {
               score++;
               playAudio('suono-regalo.mp3');
@@ -438,7 +509,7 @@
             }
           }
 
-          if (item.x < -50) items.splice(i, 1);
+          if (item.x < -100) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -451,14 +522,16 @@
       if (bgMusic) bgMusic.pause();
       playAudio('yeee.mp3');
       
-      const box = document.getElementById('cutscene-box');
-      box.classList.remove('hidden');
-      box.innerHTML = "<h1>FINE!</h1>";
+      const cutContainer = document.getElementById('cutscene-container');
+      const cutText = document.getElementById('cutscene-text');
+      
+      cutContainer.classList.remove('hidden');
+      cutText.innerHTML = "<h1>HAI VINTO!<br>Tutti i regali recuperati! 🎉</h1>";
 
       setTimeout(() => {
         document.getElementById('game-screen').classList.add('hidden');
         avviaParte3();
-      }, 2500);
+      }, 3000);
     }
 
     // --- PARTE 3: REGALI ---
@@ -474,10 +547,10 @@
       dett.classList.remove('hidden');
 
       if (tipo === 'fiori') {
-        cont.innerHTML = `<img src="bouquet.png" style="max-height: 50vh;"><h2 style="color:white;">Dei fiori per i tuoi 18!</h2>`;
+        cont.innerHTML = `<img src="bouquet.png" style="max-height: 60vh;"><h2 style="color:white; font-size: 2rem;">Dei fiori speciali per i tuoi 18!</h2>`;
       } else if (tipo === 'foto') {
         cont.innerHTML = `
-          <h2 style="color:white;">I Nostri Ricordi</h2>
+          <h2 style="color:white; font-size: 2rem;">I Nostri Ricordi</h2>
           <div class="gallery-grid">
             <img src="foto1.jpg">
             <img src="foto2.jpg">
@@ -486,17 +559,17 @@
       } else if (tipo === 'lettera') {
         cont.innerHTML = `
           <div id="let-box" onclick="apriLetteraTesto()">
-            <img src="lettera-chiusa.png" style="width: 150px; cursor: pointer;">
-            <p style="color:white;">Clicca la lettera per leggerla!</p>
+            <img src="lettera-chiusa.png" style="width: 180px; cursor: pointer;">
+            <p style="color:white; font-size: 1.5rem;">Clicca sulla lettera per leggerla!</p>
           </div>`;
       } else if (tipo === 'video') {
-        cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 80vw; max-height: 60vh; border-radius: 10px;"></video>`;
+        cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 85vw; max-height: 65vh; border-radius: 12px; border: 3px solid #fff;"></video>`;
       } else if (tipo === 'gatto') {
         cont.innerHTML = `
           <div style="color:white;">
-            <h2>Grazie di aver giocato!</h2>
-            <p>Realizzato da:</p>
-            <h3>V.Sasailor</h3>
+            <h2 style="font-size: 2.2rem;">Grazie di aver giocato!</h2>
+            <p style="font-size: 1.5rem;">Realizzato da:</p>
+            <h3 style="font-size: 2rem; color: #ff4081;">V.Sasailor</h3>
           </div>`;
       }
     }
