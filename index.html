@@ -4,16 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Il Compleanno di Jessy!</title>
+  
+  <!-- Font Pixel Art di Riserva da Google (si attiva se il file locale manca) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
+    /* Definizioni per il font Caio Pixel / Cairo Pixel */
     @font-face {
-      font-family: 'CairoPixel';
-      src: url('cairopixel.ttf') format('truetype');
+      font-family: 'CaioPixel';
+      src: url('cairopixel.ttf') format('truetype'),
+           url('Caio Pixel.ttf') format('truetype'),
+           url('cairopixel.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
     }
 
     * {
       box-sizing: border-box;
       user-select: none;
-      font-family: 'CairoPixel', sans-serif;
+      /* Usa CaioPixel locale; se fallisce, usa Press Start 2P da web */
+      font-family: 'CaioPixel', 'Press Start 2P', monospace, sans-serif;
     }
 
     body, html {
@@ -92,8 +104,8 @@
       overflow-y: auto;
       color: #3d2200;
       text-align: left;
-      font-size: 1.5rem;
-      line-height: 1.6;
+      font-size: 1.1rem;
+      line-height: 1.8;
       box-shadow: 0 10px 0 #4a2f08;
     }
 
@@ -109,12 +121,13 @@
       position: absolute;
       z-index: 100;
       color: #fff;
-      font-size: 2.8rem;
+      font-size: 2rem;
       font-weight: bold;
       text-shadow: 4px 4px #000;
       animation: blink 0.4s infinite alternate;
       padding: 20px;
       max-width: 90vw;
+      line-height: 1.4;
     }
 
     @keyframes blink {
@@ -222,7 +235,7 @@
       flex-direction: column;
       align-items: center;
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       text-shadow: 3px 3px #000;
     }
 
@@ -246,7 +259,7 @@
       border-radius: 14px;
       border: 4px solid #fff;
       cursor: pointer;
-      font-size: 1.5rem;
+      font-size: 1.1rem;
       box-shadow: 0 6px 0 #9c0042;
     }
 
@@ -283,7 +296,7 @@
       <div class="pergamena">
         <div id="pergamena-testo"></div>
         <br>
-        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold; font-size: 1.4rem;" onclick="clickContinua()">
+        <span id="btn-continua" style="color: #d32f2f; cursor: pointer; font-weight: bold; font-size: 1.1rem;" onclick="clickContinua()">
           ▶ Schiaccia qui per continuare
         </span>
       </div>
@@ -314,7 +327,7 @@
   <!-- PARTE 3: REGALI -->
   <div id="gifts-screen" class="screen hidden">
     <div id="menu-icons">
-      <h2 style="color: white; text-shadow: 4px 4px #000; font-size: 3rem; margin-bottom: 15px;">I Tuoi Regali</h2>
+      <h2 style="color: white; text-shadow: 4px 4px #000; font-size: 2rem; margin-bottom: 15px;">I Tuoi Regali</h2>
       <div class="icons-grid">
         <button class="icon-btn" onclick="apriRegalo('fiori')"><img src="icona-fiori.png"><span>Fiori</span></button>
         <button class="icon-btn" onclick="apriRegalo('foto')"><img src="icona-foto.png"><span>Foto</span></button>
@@ -432,23 +445,25 @@
       let score = 0;
       const targetScore = 10;
       
-      // PERSONAGGIO INGRANDITO DEL 100% (Da ~520px a 1040px)
-      const carWidth = Math.min(canvas.width * 0.85, 1040);
-      carElement.style.width = carWidth + 'px';
-      carElement.style.height = 'auto';
+      // DIMENSIONE UNIFICATA PER TUTTI GLI ELEMENTI (160px)
+      const commonSize = 160;
 
-      // Dimensioni Ostacoli e Regali invariate
-      const obsSize = 220;
-      const giftSize = 200;
+      // Impostiamo la dimensione della GIF macchina/personaggio uguale agli altri
+      carElement.style.width = commonSize + 'px';
+      carElement.style.height = commonSize + 'px';
 
-      // Linea di terra invariata per preservare posizione ostacoli e regali
-      const groundY = Math.max(canvas.height - 450, 150);
+      // Dimensioni identiche per ostacoli e regali
+      const obsSize = commonSize;
+      const giftSize = commonSize;
+
+      // Linea di terra riallineata alle nuove dimensioni
+      const groundY = Math.max(canvas.height - 220, 100);
       let carY = groundY;
       
-      // SALTO PIÙ LUNGO (gravità ridotta per far fluttuare più a lungo in avanti)
+      // Salto
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.28;
+      const gravity = 0.6;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -461,17 +476,17 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? groundY + 10 : groundY - giftSize - 30,
+          y: isObstacle ? groundY : groundY - giftSize - 20,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2500);
+      let spawnInterval = setInterval(spawnItem, 2200);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -15; // Velocità verticale bilanciata per non andare troppo in alto
+          jumpSpeed = -16;
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -503,25 +518,23 @@
           }
         }
 
-        // Posizionamento Personaggio
-        const carX = 40;
+        // Posizionamento Personaggio/Macchina
+        const carX = 50;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox Reale del personaggio adattata alle nuove dimensioni
+        // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + (carWidth * 0.25),
-          right: carX + (carWidth * 0.75),
-          top: carY + 60,
-          bottom: carY + 380
+          left: carX + 15,
+          right: carX + commonSize - 15,
+          top: carY + 15,
+          bottom: carY + commonSize - 15
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 8;
-
-          const currentSize = item.type === 'obs' ? obsSize : giftSize;
+          item.x -= 7;
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obsSize, obsSize);
@@ -531,10 +544,10 @@
 
           // Hitbox Oggetto
           const itemHitbox = {
-            left: item.x + 20,
-            right: item.x + currentSize - 20,
-            top: item.y + 20,
-            bottom: item.y + currentSize - 20
+            left: item.x + 15,
+            right: item.x + commonSize - 15,
+            top: item.y + 15,
+            bottom: item.y + commonSize - 15
           };
 
           // Controllo Collisioni
@@ -559,7 +572,7 @@
                 return;
               }
             } else if (item.type === 'obs') {
-              // Reset
+              // Reset in caso di impatto con ostacolo
               score = 0;
               document.getElementById('progress-bar').style.width = '0%';
               items = [];
@@ -568,7 +581,7 @@
             }
           }
 
-          if (item.x < -350) items.splice(i, 1);
+          if (item.x < -200) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
@@ -611,10 +624,10 @@
       dett.classList.remove('hidden');
 
       if (tipo === 'fiori') {
-        cont.innerHTML = `<img src="bouquet.png" style="max-height: 65vh;"><h2 style="color:white; font-size: 2.2rem;">Dei fiori speciali per i tuoi 18!</h2>`;
+        cont.innerHTML = `<img src="bouquet.png" style="max-height: 65vh;"><h2 style="color:white; font-size: 1.8rem;">Dei fiori speciali per i tuoi 18!</h2>`;
       } else if (tipo === 'foto') {
         cont.innerHTML = `
-          <h2 style="color:white; font-size: 2.5rem;">I Nostri Ricordi</h2>
+          <h2 style="color:white; font-size: 2rem;">I Nostri Ricordi</h2>
           <div class="gallery-grid">
             <img src="foto1.jpg">
             <img src="foto2.jpg">
@@ -624,16 +637,16 @@
         cont.innerHTML = `
           <div id="let-box" onclick="apriLetteraTesto()">
             <img src="lettera-chiusa.png" style="width: 220px; cursor: pointer;">
-            <p style="color:white; font-size: 1.8rem;">Clicca sulla lettera per leggerla!</p>
+            <p style="color:white; font-size: 1.3rem;">Clicca sulla lettera per leggerla!</p>
           </div>`;
       } else if (tipo === 'video') {
         cont.innerHTML = `<video controls src="video-auguri.mp4" style="max-width: 85vw; max-height: 65vh; border-radius: 12px; border: 4px solid #fff;"></video>`;
       } else if (tipo === 'gatto') {
         cont.innerHTML = `
           <div style="color:white;">
-            <h2 style="font-size: 2.5rem;">Grazie di aver giocato!</h2>
-            <p style="font-size: 1.8rem;">Realizzato da:</p>
-            <h3 style="font-size: 2.2rem; color: #ff4081;">V.Sasailor</h3>
+            <h2 style="font-size: 2rem;">Grazie di aver giocato!</h2>
+            <p style="font-size: 1.3rem;">Realizzato da:</p>
+            <h3 style="font-size: 1.8rem; color: #ff4081;">V.Sasailor</h3>
           </div>`;
       }
     }
