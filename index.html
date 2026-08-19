@@ -445,19 +445,19 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONE UNIFICATA PER TUTTI GLI ELEMENTI (160px)
-      const commonSize = 160;
+      // DIMENSIONE UNIFICATA PER TUTTI GLI ELEMENTI (120px)
+      const commonSize = 120;
 
-      // Impostiamo la dimensione della GIF macchina/personaggio uguale agli altri
-      carElement.style.width = commonSize + 'px';
-      carElement.style.height = commonSize + 'px';
-
-      // Dimensioni identiche per ostacoli e regali
+      // Dimensioni macchina/personaggio, ostacoli e regali
+      const carSize = commonSize;
       const obsSize = commonSize;
       const giftSize = commonSize;
 
-      // Linea di terra riallineata alle nuove dimensioni
-      const groundY = Math.max(canvas.height - 220, 100);
+      carElement.style.width = carSize + 'px';
+      carElement.style.height = carSize + 'px';
+
+      // Livello della strada (Ground Y) alzato per tutti gli elementi
+      const groundY = canvas.height - commonSize - 150;
       let carY = groundY;
       
       // Salto
@@ -476,7 +476,8 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? groundY : groundY - giftSize - 20,
+          // Ostacolo poggiato a terra (groundY), Regalo fluttuante a mezz'aria
+          y: isObstacle ? groundY : groundY - giftSize - 30,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -486,7 +487,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -16;
+          jumpSpeed = -15;
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -519,16 +520,16 @@
         }
 
         // Posizionamento Personaggio/Macchina
-        const carX = 50;
+        const carX = 60;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
         // Hitbox del Personaggio
         const realCarHitbox = {
-          left: carX + 15,
-          right: carX + commonSize - 15,
-          top: carY + 15,
-          bottom: carY + commonSize - 15
+          left: carX + 10,
+          right: carX + carSize - 10,
+          top: carY + 10,
+          bottom: carY + carSize - 10
         };
 
         // Disegno e gestione Oggetti
@@ -544,10 +545,10 @@
 
           // Hitbox Oggetto
           const itemHitbox = {
-            left: item.x + 15,
-            right: item.x + commonSize - 15,
-            top: item.y + 15,
-            bottom: item.y + commonSize - 15
+            left: item.x + 10,
+            right: item.x + commonSize - 10,
+            top: item.y + 10,
+            bottom: item.y + commonSize - 10
           };
 
           // Controllo Collisioni
