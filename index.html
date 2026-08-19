@@ -432,23 +432,23 @@
       let score = 0;
       const targetScore = 10;
       
-      // Proporzioni Macchina
-      const carWidth = Math.min(canvas.width * 0.42, 520);
+      // PERSONAGGIO INGRANDITO DEL 100% (Da ~520px a 1040px)
+      const carWidth = Math.min(canvas.width * 0.85, 1040);
       carElement.style.width = carWidth + 'px';
       carElement.style.height = 'auto';
 
-      // Dimensioni MOLTO PIÙ GRANDI per Ostacoli e Regali
+      // Dimensioni Ostacoli e Regali invariate
       const obsSize = 220;
       const giftSize = 200;
 
-      // Alzato il personaggio rispetto al bordo inferiore del canvas
-      const groundY = canvas.height - 300;
+      // Linea di terra invariata per preservare posizione ostacoli e regali
+      const groundY = Math.max(canvas.height - 450, 150);
       let carY = groundY;
       
-      // Salto più lungo ed elevato
+      // SALTO PIÙ LUNGO (gravità ridotta per far fluttuare più a lungo in avanti)
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.65; // Gravità ridotta per prolungare la durata del salto
+      const gravity = 0.28;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -461,7 +461,7 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? canvas.height - obsSize - 80 : canvas.height - giftSize - 290,
+          y: isObstacle ? groundY + 10 : groundY - giftSize - 30,
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -471,8 +471,8 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -22; // Forza del salto bilanciata con la gravità per durata maggiore
-          playAudio('suono-salto.mp3', false, 0.75); // Volume ridotto del 25%
+          jumpSpeed = -15; // Velocità verticale bilanciata per non andare troppo in alto
+          playAudio('suono-salto.mp3', false, 0.75);
         }
       }
 
@@ -508,12 +508,12 @@
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox Reale
+        // Hitbox Reale del personaggio adattata alle nuove dimensioni
         const realCarHitbox = {
           left: carX + (carWidth * 0.25),
           right: carX + (carWidth * 0.75),
-          top: carY + 30,
-          bottom: carY + 190
+          top: carY + 60,
+          bottom: carY + 380
         };
 
         // Disegno e gestione Oggetti
@@ -657,4 +657,3 @@
   </script>
 </body>
 </html>
-  
