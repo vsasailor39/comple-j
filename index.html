@@ -440,29 +440,29 @@
       let score = 0;
       const targetScore = 10;
       
-      // DIMENSIONI DOPPIE PER GLI ELEMENTI
-      const carDisplaySize = 360;   // Macchina molto grande e ben visibile
-      const obstacleSize = 300;    // Ostacolo raddoppiato
-      const giftSize = 300;        // Regalo raddoppiato
+      // DIMENSIONI AUMENTATE DELLE 1.5x RISPETTO A PRIMA
+      const carDisplaySize = 540;   // Macchina imponente e ben visibile
+      const obstacleSize = 450;    // Ostacolo proporzionato
+      const giftSize = 450;        // Regalo grande e ben visibile
 
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
 
       // TERRENO BASE
-      const floorY = canvas.height - 35; 
+      const floorY = canvas.height - 30; 
       
       // Posizione dell'ostacolo poggiato a terra
       const obstacleY = floorY - obstacleSize;
       
-      // Compensazione dello spazio trasparente vuoto sotto il disegno dell'auto raddoppiata
-      const carOffsetBottom = 50; 
+      // Compensazione dello spazio trasparente vuoto della macchina ingrandita
+      const carOffsetBottom = 75; 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO AUMENTATA PER ELEMENTI PIÙ GRANDI
+      // FISICA DEL SALTO MOLTO LUNGA, ALTA E PERFORMATIVA
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.65; 
+      const gravity = 0.8; 
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -475,18 +475,18 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          // Ostacolo a terra, regalo in alto per essere preso con il salto
-          y: isObstacle ? obstacleY : (floorY - 520),
+          // Ostacolo a terra, regalo librato in alto per il salto
+          y: isObstacle ? obstacleY : (floorY - 720),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2600);
+      let spawnInterval = setInterval(spawnItem, 2800);
 
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -28; 
+          jumpSpeed = -36; // Spinta potente per coprire sia l'altezza che la gittata in lungo
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -500,7 +500,7 @@
         // Sfondo animato
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
-          bgX -= 3.5;
+          bgX -= 4;
           if (bgX <= -bgScaledWidth) bgX = 0;
 
           for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
@@ -519,22 +519,22 @@
         }
 
         // Posizionamento Macchina
-        const carX = 60;
+        const carX = 50;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox ricalibrata sui bordi del disegno dell'auto grande
+        // Hitbox ricalibrata sui bordi del disegno interno (escludendo i grandi spazi vuoti trasparenti)
         const realCarHitbox = {
-          left: carX + 70,
-          right: carX + carDisplaySize - 70,
-          top: carY + 70,
-          bottom: carY + carDisplaySize - carOffsetBottom - 20
+          left: carX + 100,
+          right: carX + carDisplaySize - 100,
+          top: carY + 100,
+          bottom: carY + carDisplaySize - carOffsetBottom - 25
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 6.5; 
+          item.x -= 7; 
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obstacleSize, obstacleSize);
@@ -544,12 +544,12 @@
 
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
-          // Hitbox precisa per gli oggetti raddoppiati
+          // Hitbox perdonabile per gli oggetti
           const itemHitbox = {
-            left: item.x + 60,
-            right: item.x + currentSize - 60,
-            top: item.y + 60,
-            bottom: item.y + currentSize - 30
+            left: item.x + 90,
+            right: item.x + currentSize - 90,
+            top: item.y + 90,
+            bottom: item.y + currentSize - 40
           };
 
           // Controllo Collisioni
@@ -582,7 +582,7 @@
             }
           }
 
-          if (item.x < -400) items.splice(i, 1);
+          if (item.x < -600) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
