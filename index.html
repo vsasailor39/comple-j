@@ -440,18 +440,18 @@
       let score = 0;
       const targetScore = 10;
       
-      const carSize = 647; 
+      // VALORI E DIMENSIONI ORIGINALI
+      const carSize = 863; 
       const obsSize = 240; 
       const giftSize = 240;
 
       carElement.style.width = carSize + 'px';
       carElement.style.height = carSize + 'px';
 
-      // Linea della base d'appoggio comune (sul fondo dello schermo)
-      const groundY = canvas.height - carSize - 10;
+      const groundY = canvas.height - carSize + 60;
       let carY = groundY;
       
-      // Fisica Salto
+      // SALTO ORIGINALE
       let isJumping = false;
       let jumpSpeed = 0;
       const gravity = 0.9;
@@ -465,14 +465,9 @@
 
       function spawnItem() {
         const isObstacle = Math.random() > 0.4;
-        
-        // Calcolo della posizione Y basato sul fondo comune (groundY + carSize)
-        // L'ostacolo tocca terra alla stessa altezza delle ruote/base macchina
-        const baseFloorY = groundY + carSize;
-        
         items.push({
           x: canvas.width,
-          y: isObstacle ? (baseFloorY - obsSize) : (baseFloorY - giftSize - 220),
+          y: isObstacle ? (groundY + carSize - obsSize) : (groundY + carSize - giftSize - 120),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -482,7 +477,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -37.5; 
+          jumpSpeed = -30; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
