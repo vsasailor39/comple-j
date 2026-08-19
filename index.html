@@ -440,10 +440,10 @@
       let score = 0;
       const targetScore = 10;
       
-      // NUOVE DIMENSIONI INGRANDITE E BEN VISIBILI
-      const carDisplaySize = 180;   // Ingrandita per rendere il veicolo visivamente grande
-      const obstacleSize = 150;    // Ostacolo ben proporzionato
-      const giftSize = 150;        // Regalo grande e ben visibile
+      // DIMENSIONI DOPPIE PER GLI ELEMENTI
+      const carDisplaySize = 360;   // Macchina molto grande e ben visibile
+      const obstacleSize = 300;    // Ostacolo raddoppiato
+      const giftSize = 300;        // Regalo raddoppiato
 
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
@@ -451,19 +451,18 @@
       // TERRENO BASE
       const floorY = canvas.height - 35; 
       
-      // Posizione dell'ostacolo pDocumentato a terra
+      // Posizione dell'ostacolo poggiato a terra
       const obstacleY = floorY - obstacleSize;
       
-      // Compensazione dello spazio trasparente vuoto sotto il disegno dell'auto
-      // Spingiamo leggermente in basso il box dell'auto così il disegno tocca terra
-      const carOffsetBottom = 25; 
+      // Compensazione dello spazio trasparente vuoto sotto il disegno dell'auto raddoppiata
+      const carOffsetBottom = 50; 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO (Manteniamo un'arcata ampia e comoda)
+      // FISICA DEL SALTO AUMENTATA PER ELEMENTI PIÙ GRANDI
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.5; 
+      const gravity = 0.65; 
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -476,8 +475,8 @@
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          // Ostacolo a terra, regalo in alto per essere preso saltando
-          y: isObstacle ? obstacleY : (floorY - 300),
+          // Ostacolo a terra, regalo in alto per essere preso con il salto
+          y: isObstacle ? obstacleY : (floorY - 520),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
@@ -487,7 +486,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -21; 
+          jumpSpeed = -28; 
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
@@ -501,7 +500,7 @@
         // Sfondo animato
         if (bgImg.complete && bgImg.width > 0) {
           const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
-          bgX -= 3;
+          bgX -= 3.5;
           if (bgX <= -bgScaledWidth) bgX = 0;
 
           for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
@@ -520,22 +519,22 @@
         }
 
         // Posizionamento Macchina
-        const carX = 70;
+        const carX = 60;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        // Hitbox calibrata SOLO sul disegno interno della Macchina (ignorando il vuoto trasparente)
+        // Hitbox ricalibrata sui bordi del disegno dell'auto grande
         const realCarHitbox = {
-          left: carX + 35,
-          right: carX + carDisplaySize - 35,
-          top: carY + 35,
-          bottom: carY + carDisplaySize - carOffsetBottom - 10
+          left: carX + 70,
+          right: carX + carDisplaySize - 70,
+          top: carY + 70,
+          bottom: carY + carDisplaySize - carOffsetBottom - 20
         };
 
         // Disegno e gestione Oggetti
         for (let i = items.length - 1; i >= 0; i--) {
           let item = items[i];
-          item.x -= 6; 
+          item.x -= 6.5; 
 
           if (item.type === 'obs') {
             ctx.drawImage(obsImg, item.x, item.y, obstacleSize, obstacleSize);
@@ -545,12 +544,12 @@
 
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
-          // Hitbox pulita per gli oggetti
+          // Hitbox precisa per gli oggetti raddoppiati
           const itemHitbox = {
-            left: item.x + 30,
-            right: item.x + currentSize - 30,
-            top: item.y + 30,
-            bottom: item.y + currentSize - 15
+            left: item.x + 60,
+            right: item.x + currentSize - 60,
+            top: item.y + 60,
+            bottom: item.y + currentSize - 30
           };
 
           // Controllo Collisioni
@@ -583,7 +582,7 @@
             }
           }
 
-          if (item.x < -300) items.splice(i, 1);
+          if (item.x < -400) items.splice(i, 1);
         }
 
         requestAnimationFrame(update);
