@@ -440,7 +440,6 @@
       let score = 0;
       const targetScore = 10;
       
-      // RIPRISTINATE LE DIMENSIONI CORRETTE DELLA VERSIONE PRECEDENTE
       const carDisplaySize = 540;   
       const obstacleSize = 450;    
       const giftSize = 450;        
@@ -457,10 +456,10 @@
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
-      // FISICA DEL SALTO RICALIBRATA: MENO ALTO, MOLTO PIÙ LUNGO
+      // FISICA DEL SALTO CORRETTA: ALTEZZA BASSA, MA LUNGO
       let isJumping = false;
       let jumpSpeed = 0;
-      const gravity = 0.28; // Gravità molto ridotta per far volare l'auto in lungo per più tempo
+      const gravity = 0.28; // Gravità morbida per planare in lungo
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -483,7 +482,7 @@
       function jump() {
         if (!isJumping) {
           isJumping = true;
-          jumpSpeed = -24; // Altezza moderata
+          jumpSpeed = -16; // Altezza del salto ridotta e bilanciata
           playAudio('suono-salto.mp3', false, 0.75);
         }
       }
