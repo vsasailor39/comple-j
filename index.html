@@ -363,26 +363,29 @@
       let score = 0;
       const targetScore = 10;
       
-      // Dimensioni fisse e stabili identiche a quelle del PC fisso
-      const carDisplaySize = 420;   
-      const obstacleSize = 340;    
-      const giftSize = 340;        
+      // Fattore di scala basato sullo schermo (delle dimensioni originali grandi)
+      const scaleFactor = canvas.width / 1536; 
+      const clampedScale = Math.max(0.75, Math.min(scaleFactor, 1.25));
+
+      const carDisplaySize = Math.round(540 * clampedScale);   
+      const obstacleSize = Math.round(450 * clampedScale);    
+      const giftSize = Math.round(450 * clampedScale);        
 
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
 
       const floorY = canvas.height - 30; 
       const obstacleY = floorY - obstacleSize;
-      const carOffsetBottom = 60; 
+      const carOffsetBottom = Math.round(75 * clampedScale); 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
       let isJumping = false;
       let jumpSpeed = 0;
       
-      // Fisica costante e scattante (salto più alto e reattivo)
-      const gravity = 0.85;
-      const jumpPower = -17.5;
+      // FISICA AGGIUSTATA: Salto più alto e potente anche sulle proporzioni scalate
+      const gravity = 0.65 * clampedScale;
+      const jumpPower = -19.0 * Math.sqrt(clampedScale);
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -391,20 +394,19 @@
       let bgX = 0;
       let items = [];
 
-      // Velocità di movimento e distanza aumentata tra gli ostacoli
-      const gameSpeed = 8.5;
+      const gameSpeed = 8.5 * clampedScale;
 
       function spawnItem() {
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? obstacleY : (floorY - 480),
+          y: isObstacle ? obstacleY : (floorY - Math.round(600 * clampedScale)),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      // Intervallo aumentato a 2700ms così gli ostacoli sono più distanziati e non si accavallano
-      let spawnInterval = setInterval(spawnItem, 2700);
+      // Intervallo di spawn aumentato per dare più distanza tra gli ostacoli
+      let spawnInterval = setInterval(spawnItem, 3200);
       let stickerInterval = setInterval(showRandomSticker, 8000);
 
       function jump() {
@@ -440,16 +442,16 @@
           }
         }
 
-        const carX = 60;
+        const carX = 50;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        const hitPadding = 100;
+        const hitPadding = Math.round(130 * clampedScale);
         const realCarHitbox = {
           left: carX + hitPadding,
           right: carX + carDisplaySize - hitPadding,
           top: carY + hitPadding,
-          bottom: carY + carDisplaySize - carOffsetBottom - 20
+          bottom: carY + carDisplaySize - carOffsetBottom - Math.round(25 * clampedScale)
         };
 
         for (let i = items.length - 1; i >= 0; i--) {
@@ -465,10 +467,10 @@
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
           const itemHitbox = {
-            left: item.x + 100,
-            right: item.x + currentSize - 100,
-            top: item.y + 100,
-            bottom: item.y + currentSize - 40
+            left: item.x + hitPadding,
+            right: item.x + currentSize - hitPadding,
+            top: item.y + hitPadding,
+            bottom: item.y + currentSize - Math.round(40 * clampedScale)
           };
 
           const isColliding = !(
