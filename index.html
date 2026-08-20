@@ -115,7 +115,7 @@
 
     /* PARTE 2: GIOCO */
     #game-screen { position: relative; overflow: hidden; background-color: #8a9a86; }
-    #game-canvas { width: 100%; height: 100%; display: block; }
+    #game-canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
     #car-gif-element { position: absolute; z-index: 15; pointer-events: none; object-fit: contain; }
 
     /* Sticker Gigante a Schermo Intero (Dura 2 secondi) */
@@ -363,7 +363,7 @@
       }, 3500);
     }
 
-    // Mostra lo sticker gigante una sola volta per partita
+    // Mostra lo sticker gigante dopo 20 secondi, una sola volta per partita
     let stickerShown = false;
     function showFullscreenStickerOnce() {
       if (stickerShown) return;
@@ -381,6 +381,8 @@
     function startMiniGame() {
       const canvas = document.getElementById('game-canvas');
       const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+
       const carElement = document.getElementById('car-gif-element');
       const instructionsEl = document.getElementById('game-instructions');
       
@@ -434,9 +436,10 @@
 
       let spawnInterval = setInterval(spawnItem, 3400);
 
+      // Trigger dello sticker dopo esattamente 20 secondi (20000 millisecondi)
       setTimeout(() => {
         showFullscreenStickerOnce();
-      }, 4000);
+      }, 20000);
 
       function jump() {
         if (!isJumping) {
@@ -461,11 +464,14 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         if (bgImg.complete && bgImg.width > 0) {
-          const bgScaledWidth = (canvas.height / bgImg.height) * bgImg.width;
+          const bgScaledWidth = Math.ceil((canvas.height / bgImg.height) * bgImg.width) + 1;
           bgX -= gameSpeed * 0.6;
-          if (bgX <= -bgScaledWidth) bgX = 0;
+          
+          if (bgX <= -bgScaledWidth) {
+            bgX = 0;
+          }
 
-          for (let x = bgX; x < canvas.width + bgScaledWidth; x += bgScaledWidth) {
+          for (let x = Math.floor(bgX); x < canvas.width; x += bgScaledWidth) {
             ctx.drawImage(bgImg, x, 0, bgScaledWidth, canvas.height);
           }
         }
