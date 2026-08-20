@@ -118,22 +118,26 @@
     #game-canvas { width: 100%; height: 100%; display: block; }
     #car-gif-element { position: absolute; z-index: 15; pointer-events: none; object-fit: contain; }
 
-    /* Sticker Casuale */
+    /* Sticker Gigante a Schermo Intero (Dura 2 secondi) */
     #sticker-sticker {
       position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
       z-index: 100;
-      width: 400px;
-      height: 400px;
+      width: 85vw;
+      height: 85vh;
       object-fit: contain;
       pointer-events: none;
-      filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.3));
-      animation: popSticker 1s ease-out;
+      filter: drop-shadow(0px 15px 25px rgba(0,0,0,0.5));
+      animation: popStickerFull 2s ease-out forwards;
     }
-    @keyframes popSticker {
-      0% { transform: scale(0); opacity: 0; }
-      20% { transform: scale(1.2); opacity: 1; }
-      80% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0); opacity: 0; }
+    @keyframes popStickerFull {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(-15deg); opacity: 0; }
+      15% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); opacity: 1; }
+      25% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+      85% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(0) rotate(15deg); opacity: 0; }
     }
 
     .progress-container {
@@ -219,7 +223,7 @@
       <img id="cutscene-pers" class="personaggio-cutscene" src="personaggio-allarme.gif">
     </div>
 
-    <!-- Sticker Casuale Gigante -->
+    <!-- Sticker Gigante a Schermo Intero -->
     <img id="sticker-sticker" class="hidden" src="sticker.png">
 
     <img id="car-gif-element" src="personaggio-pronto.gif" class="hidden">
@@ -334,20 +338,20 @@
       }, 3500);
     }
 
-    // Sticker casuale
-    function showRandomSticker() {
+    // Mostra lo sticker gigante una sola volta per partita
+    let stickerShown = false;
+    function showFullscreenStickerOnce() {
+      if (stickerShown) return;
+      stickerShown = true;
+
       const s = document.getElementById('sticker-sticker');
-      const x = Math.random() * (window.innerWidth - 400);
-      const y = Math.random() * (window.innerHeight - 400);
-      s.style.left = x + 'px';
-      s.style.top = y + 'px';
-      
       s.classList.remove('hidden');
       playAudio('suono-sconcerto.mp3');
 
+      // Scompare automaticamente dopo esatti 2 secondi
       setTimeout(() => {
         s.classList.add('hidden');
-      }, 1000);
+      }, 2000);
     }
 
     function startMiniGame() {
@@ -382,7 +386,6 @@
       let isJumping = false;
       let jumpSpeed = 0;
       
-      // SALTO RADDOPPIATO E POTENZIATO: Altezza e tempo di volo aumentati drasticamente
       const gravity = 0.52 * clampedScale;
       const jumpPower = -26.0 * Math.sqrt(clampedScale);
 
@@ -404,9 +407,12 @@
         });
       }
 
-      // Distanza ampia tra gli ostacoli per godersi il salto lungo
       let spawnInterval = setInterval(spawnItem, 3400);
-      let stickerInterval = setInterval(showRandomSticker, 8000);
+
+      // Programma la comparsa dello sticker una sola volta dopo 4 secondi dall'inizio del gioco
+      setTimeout(() => {
+        showFullscreenStickerOnce();
+      }, 4000);
 
       function jump() {
         if (!isJumping) {
@@ -488,7 +494,6 @@
 
               if (score >= targetScore) {
                 clearInterval(spawnInterval);
-                clearInterval(stickerInterval);
                 carElement.classList.add('hidden');
                 vittoriaGioco();
                 return;
