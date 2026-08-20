@@ -237,7 +237,7 @@
         <div id="progress-bar" class="progress-bar"></div>
       </div>
       <div id="game-instructions" class="game-instructions">
-        Regali presi: 0/10<br>
+        Regali presi: 0/5<br>
         Schiaccia space per saltare<br>
         Supera gli ostacoli e recupera i regali!
       </div>
@@ -390,7 +390,7 @@
       carElement.classList.remove('hidden');
 
       let score = 0;
-      const targetScore = 10;
+      const targetScore = 5;
       
       const scaleFactor = canvas.width / 1536; 
       const clampedScale = Math.max(0.75, Math.min(scaleFactor, 1.25));
