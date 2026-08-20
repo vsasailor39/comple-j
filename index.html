@@ -140,20 +140,38 @@
       100% { transform: translate(-50%, -50%) scale(0) rotate(15deg); opacity: 0; }
     }
 
-    .progress-container {
+    .progress-wrapper {
       position: absolute;
       top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
       width: 80%;
       max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .progress-container {
+      width: 100%;
       height: 35px;
       background: rgba(0,0,0,0.6);
       border: 4px solid #fff;
       border-radius: 20px;
       overflow: hidden;
-      z-index: 20;
     }
 
     .progress-bar { height: 100%; width: 0%; background: #4caf50; transition: width 0.2s ease-out; }
+
+    .game-instructions {
+      margin-top: 8px;
+      color: #fff;
+      font-size: 0.8rem;
+      text-shadow: 2px 2px #000;
+      text-align: center;
+      line-height: 1.6;
+    }
 
     /* Cutscene */
     #cutscene-container {
@@ -214,8 +232,15 @@
 
   <!-- PARTE 2: VIDEOGIOCO & TRANSIZIONE -->
   <div id="game-screen" class="screen hidden">
-    <div class="progress-container">
-      <div id="progress-bar" class="progress-bar"></div>
+    <div class="progress-wrapper">
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+      <div id="game-instructions" class="game-instructions">
+        Regali presi: 0/10<br>
+        Schiaccia space per saltare<br>
+        Supera gli ostacoli e recupera i regali!
+      </div>
     </div>
     
     <div id="cutscene-container" class="hidden">
@@ -348,7 +373,6 @@
       s.classList.remove('hidden');
       playAudio('suono-sconcerto.mp3');
 
-      // Scompare automaticamente dopo esatti 2 secondi
       setTimeout(() => {
         s.classList.add('hidden');
       }, 2000);
@@ -358,6 +382,7 @@
       const canvas = document.getElementById('game-canvas');
       const ctx = canvas.getContext('2d');
       const carElement = document.getElementById('car-gif-element');
+      const instructionsEl = document.getElementById('game-instructions');
       
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -409,7 +434,6 @@
 
       let spawnInterval = setInterval(spawnItem, 3400);
 
-      // Programma la comparsa dello sticker una sola volta dopo 4 secondi dall'inizio del gioco
       setTimeout(() => {
         showFullscreenStickerOnce();
       }, 4000);
@@ -424,6 +448,14 @@
 
       window.addEventListener('keydown', (e) => { if (e.code === 'Space') jump(); });
       window.addEventListener('touchstart', jump);
+
+      function updateUI() {
+        instructionsEl.innerHTML = `
+          Regali presi: ${score}/${targetScore}<br>
+          Schiaccia space per saltare<br>
+          Supera gli ostacoli e recupera i regali!
+        `;
+      }
 
       function update() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -490,6 +522,7 @@
               score++;
               playAudio('suono-regalo.mp3');
               document.getElementById('progress-bar').style.width = (score / targetScore * 100) + '%';
+              updateUI();
               items.splice(i, 1);
 
               if (score >= targetScore) {
@@ -501,6 +534,7 @@
             } else if (item.type === 'obs') {
               score = 0;
               document.getElementById('progress-bar').style.width = '0%';
+              updateUI();
               items = [];
               playAudio('suono-sconcerto.mp3');
               break;
@@ -513,6 +547,7 @@
         requestAnimationFrame(update);
       }
 
+      updateUI();
       update();
     }
 
