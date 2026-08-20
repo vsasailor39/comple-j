@@ -363,28 +363,26 @@
       let score = 0;
       const targetScore = 10;
       
-      // Scaliamo le dimensioni in base alla larghezza dello schermo per mantenere proporzioni fisse rispetto al PC fisso
-      const scaleFactor = canvas.width / 1536; // presuponendo uno schermo di riferimento standard fisso intorno ai 1536px di larghezza
-      const clampedScale = Math.max(0.7, Math.min(scaleFactor, 1.2));
-
-      const carDisplaySize = Math.round(540 * clampedScale);   
-      const obstacleSize = Math.round(450 * clampedScale);    
-      const giftSize = Math.round(450 * clampedScale);        
+      // Dimensioni fisse e stabili identiche a quelle del PC fisso
+      const carDisplaySize = 420;   
+      const obstacleSize = 340;    
+      const giftSize = 340;        
 
       carElement.style.width = carDisplaySize + 'px';
       carElement.style.height = carDisplaySize + 'px';
 
       const floorY = canvas.height - 30; 
       const obstacleY = floorY - obstacleSize;
-      const carOffsetBottom = Math.round(75 * clampedScale); 
+      const carOffsetBottom = 60; 
       const carGroundY = floorY - carDisplaySize + carOffsetBottom;
       let carY = carGroundY;
       
       let isJumping = false;
       let jumpSpeed = 0;
-      // Fisica basata sullo schermo per mantenere la stessa altezza e velocità di salto ovunque
-      const gravity = 0.55 * clampedScale;
-      const jumpPower = -15.5 * Math.sqrt(clampedScale);
+      
+      // Fisica costante e scattante (salto più alto e reattivo)
+      const gravity = 0.85;
+      const jumpPower = -17.5;
 
       const obsImg = new Image(); obsImg.src = 'ostacolo.png';
       const giftImg = new Image(); giftImg.src = 'regalo-gioco.png';
@@ -393,19 +391,20 @@
       let bgX = 0;
       let items = [];
 
-      // Velocità di movimento fissa e proporzionata indipendentemente dai Hz dello schermo
-      const gameSpeed = 9 * clampedScale;
+      // Velocità di movimento e distanza aumentata tra gli ostacoli
+      const gameSpeed = 8.5;
 
       function spawnItem() {
         const isObstacle = Math.random() > 0.4;
         items.push({
           x: canvas.width,
-          y: isObstacle ? obstacleY : (floorY - Math.round(600 * clampedScale)),
+          y: isObstacle ? obstacleY : (floorY - 480),
           type: isObstacle ? 'obs' : 'gift'
         });
       }
 
-      let spawnInterval = setInterval(spawnItem, 2000);
+      // Intervallo aumentato a 2700ms così gli ostacoli sono più distanziati e non si accavallano
+      let spawnInterval = setInterval(spawnItem, 2700);
       let stickerInterval = setInterval(showRandomSticker, 8000);
 
       function jump() {
@@ -441,16 +440,16 @@
           }
         }
 
-        const carX = 50;
+        const carX = 60;
         carElement.style.left = carX + 'px';
         carElement.style.top = carY + 'px';
 
-        const hitPadding = Math.round(140 * clampedScale);
+        const hitPadding = 100;
         const realCarHitbox = {
           left: carX + hitPadding,
           right: carX + carDisplaySize - hitPadding,
           top: carY + hitPadding,
-          bottom: carY + carDisplaySize - carOffsetBottom - Math.round(30 * clampedScale)
+          bottom: carY + carDisplaySize - carOffsetBottom - 20
         };
 
         for (let i = items.length - 1; i >= 0; i--) {
@@ -466,10 +465,10 @@
           const currentSize = item.type === 'obs' ? obstacleSize : giftSize;
           
           const itemHitbox = {
-            left: item.x + hitPadding,
-            right: item.x + currentSize - hitPadding,
-            top: item.y + hitPadding,
-            bottom: item.y + currentSize - Math.round(50 * clampedScale)
+            left: item.x + 100,
+            right: item.x + currentSize - 100,
+            top: item.y + 100,
+            bottom: item.y + currentSize - 40
           };
 
           const isColliding = !(
